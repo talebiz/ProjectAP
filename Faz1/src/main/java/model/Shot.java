@@ -1,13 +1,16 @@
 package model;
 
-
-import controller.Util.Constant;
+import controller.Collision;
+import controller.Util.Direction;
+import view.panels.GamePanel;
 
 import javax.swing.*;
 import java.util.ArrayList;
 
+import static controller.Util.Constant.*;
+
 public class Shot {
-    private static ArrayList<Shot> shots;
+    private static final ArrayList<Shot> shots = new ArrayList<>();
     private double x, y;
     private final double xMove, yMove;
     protected boolean appear;
@@ -19,19 +22,88 @@ public class Shot {
         this.xMove = xMove;
         this.yMove = yMove;
         appear = true;
+        shots.add(this);
+        setMoveTimer();
     }
 
     public static ArrayList<Shot> list() {
-        if (shots == null) shots = new ArrayList<>();
         return shots;
     }
 
-    public int getSize() {
-        return Constant.SHOT_SIZE;
+    private void setMoveTimer() {
+        moveTimer = new Timer(20, e -> {
+            checkCollisionToWall(GamePanel.getInstance());
+            move();
+            GamePanel.getInstance().repaint();
+        });
+        moveTimer.start();
     }
 
-    public Timer getMoveTimer() {
-        return moveTimer;
+    private void checkCollisionToWall(GamePanel gamePanel) {
+        if (x < GAME_PANEL_X) {
+            Collision.makeImpact(x, y);
+            gamePanel.setMovingLeft(true);
+            gamePanel.setMovingRight(false);
+            Timer end = new Timer(3000, a -> {
+                gamePanel.setMovingLeft(false);
+            });
+            end.setRepeats(false);
+            end.start();
+            gamePanel.increasePanelSize(Direction.LEFT);
+            moveTimer.stop();
+            appear = false;
+        }
+        if (x + SHOT_SIZE > GAME_PANEL_X + GAME_PANEL_WIDTH) {
+            Collision.makeImpact(x, y);
+            gamePanel.setMovingRight(true);
+            gamePanel.setMovingLeft(false);
+            Timer end = new Timer(3000, a -> {
+                gamePanel.setMovingRight(false);
+            });
+            end.setRepeats(false);
+            end.start();
+            gamePanel.increasePanelSize(Direction.RIGHT);
+            moveTimer.stop();
+            appear = false;
+        }
+        if (y < GAME_PANEL_Y) {
+            Collision.makeImpact(x, y);
+            gamePanel.setMovingUp(true);
+            gamePanel.setMovingDown(false);
+            Timer end = new Timer(3000, a -> {
+                gamePanel.setMovingUp(false);
+            });
+            end.setRepeats(false);
+            end.start();
+            gamePanel.increasePanelSize(Direction.UP);
+            moveTimer.stop();
+            appear = false;
+        }
+        if (y + SHOT_SIZE > GAME_PANEL_Y + GAME_PANEL_HEIGHT) {
+            Collision.makeImpact(x, y);
+            gamePanel.setMovingDown(true);
+            gamePanel.setMovingUp(false);
+            Timer end = new Timer(3000, a -> {
+                gamePanel.setMovingDown(false);
+            });
+            end.setRepeats(false);
+            end.start();
+            gamePanel.increasePanelSize(Direction.DOWN);
+            moveTimer.stop();
+            appear = false;
+        }
+    }
+
+    public int getSize() {
+        return SHOT_SIZE;
+    }
+
+    public void startMove() {
+        moveTimer.start();
+    }
+
+    public void stopMove() {
+        moveTimer.stop();
     }
 
     public void setMoveTimer(Timer moveTimer) {

@@ -2,10 +2,7 @@ package view.panels;
 
 import controller.Collision;
 import controller.Util.Direction;
-import model.Entity;
-import model.Epsilon;
-import model.Shot;
-import model.Squarantine;
+import model.*;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -13,19 +10,18 @@ import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 
 import static controller.Util.Constant.*;
 
 public class GamePanel extends MyPanel {
     private static GamePanel gamePanel;
+    Timer elapsedTime;
     Timer resizePanelTimer;
     Timer movePanelTimer;
-    Timer moveEpsilonTimer;
-    private final Epsilon epsilon = Epsilon.getInstance();
+    private final Epsilon epsilon;
     private boolean movingUp, movingDown, movingRight, movingLeft;
-    ArrayList<Entity> entities;
-    ArrayList<Entity> enemies;
+    int minute, second, wave;
+    private boolean showHUI;
 
 
     private GamePanel() {
@@ -34,15 +30,13 @@ public class GamePanel extends MyPanel {
         this.requestFocusInWindow();
         this.setSize(GAME_PANEL_WIDTH, GAME_PANEL_HEIGHT);
         this.setLocation(GAME_PANEL_X, GAME_PANEL_Y);
-        Squarantine.list().add(new Squarantine(500, 800));
-//        Squarantine.list().add(new Squarantine(700, 150));
-//        Squarantine.list().add(new Squarantine(1400, 800));
+        epsilon = Epsilon.getInstance();
+//        new Squarantine(800, 800);
+//        new Squarantine(1000, 150);
+//        new Squarantine(1000, 800);
+//        new Trigorath(1000, 800);
+//        new Trigorath(1000, 300);
         Collision.startCheckCollision();
-        enemies = new ArrayList<>();
-        enemies.addAll(Squarantine.list());
-        entities = new ArrayList<>();
-        entities.addAll(enemies);
-        entities.add(Epsilon.getInstance());
         setContent();
     }
 
@@ -51,12 +45,15 @@ public class GamePanel extends MyPanel {
         return gamePanel;
     }
 
+    public static void makeNew() {
+        gamePanel = new GamePanel();
+    }
+
     @Override
     protected void setContent() {
 //        setResizePanelTimer();
-//        setMovePanelTimer();
-        setMoveEpsilonTimer();
-        setMoveSquarantineTimer();
+        setMovePanelTimer();
+        setElapsedTime();
         setKeyListener();
         setShootListener();
     }
@@ -65,9 +62,21 @@ public class GamePanel extends MyPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2D = (Graphics2D) g;
+        if (showHUI) drawHUI(g2D);
         drawEpsilon(g2D);
         drawShots(g2D);
         drawSquarantine(g2D);
+        drawTrigorath(g2D);
+        drawCollectible(g2D);
+    }
+
+    private void drawHUI(Graphics2D g2D) {
+        g2D.setColor(Color.WHITE);
+        g2D.setFont(new Font("", Font.PLAIN, 18));
+        g2D.drawString(minute + " : " + second, GAME_PANEL_WIDTH - 65, 30);
+        g2D.drawString("❤ " + epsilon.getHP(), 20, 30);
+        g2D.drawString("☘︎ " + epsilon.getXP(), GAME_PANEL_WIDTH / 2 - 130, 30);
+        g2D.drawString("Wave: " + wave, GAME_PANEL_WIDTH / 2 + 70, 30);
     }
 
     private void drawEpsilon(Graphics2D g2D) {
@@ -80,21 +89,9 @@ public class GamePanel extends MyPanel {
     }
 
     private void drawShots(Graphics2D g2D) {
-//        for (Shot shot : Shot.list()) {
-//            if (shot.isAppear()) {
-//                g2D.setColor(Color.GREEN);
-//                g2D.fillOval(
-//                        (int) shot.getX() - GAME_PANEL_X,
-//                        (int) shot.getY() - GAME_PANEL_Y,
-//                        SHOT_SIZE,
-//                        SHOT_SIZE);
-//            } else {
-//                Shot.list().remove(shot);
-//            }
-//        }
         for (int i = 0; i < Shot.list().size(); i++) {
             if (Shot.list().get(i).isAppear()) {
-                g2D.setColor(Color.GREEN);
+                g2D.setColor(Color.WHITE);
                 g2D.fillOval(
                         (int) Shot.list().get(i).getX() - GAME_PANEL_X,
                         (int) Shot.list().get(i).getY() - GAME_PANEL_Y,
@@ -112,12 +109,57 @@ public class GamePanel extends MyPanel {
                 Squarantine squarantine = Squarantine.list().get(i);
                 g2D.setStroke(new BasicStroke(6));
                 g2D.setColor(Color.GREEN);
-                g2D.drawPolygon(squarantine.getXVertex(), squarantine.getYVertex(),4);
-
+                g2D.drawPolygon(squarantine.getXVertex(), squarantine.getYVertex(), 4);
             } else {
-                Squarantine.list().remove(i);
+                Squarantine squarantine = Squarantine.list().get(i);
+                Squarantine.list().remove(squarantine);
+                Enemy.getEnemies().remove(squarantine);
+                Entity.getEntities().remove(squarantine);
             }
         }
+    }
+
+    private void drawTrigorath(Graphics2D g2D) {
+        for (int i = 0; i < Trigorath.list().size(); i++) {
+            if (Trigorath.list().get(i).isAppear()) {
+                Trigorath trigorath = Trigorath.list().get(i);
+                g2D.setStroke(new BasicStroke(6));
+                g2D.setColor(Color.YELLOW);
+                g2D.drawPolygon(trigorath.getXVertex(), trigorath.getYVertex(), 3);
+            } else {
+                Trigorath trigorath = Trigorath.list().get(i);
+                Trigorath.list().remove(trigorath);
+                Enemy.getEnemies().remove(trigorath);
+                Entity.getEntities().remove(trigorath);
+            }
+        }
+    }
+
+    private void drawCollectible(Graphics2D g2D) {
+        for (int i = 0; i < Collectible.list().size(); i++) {
+            if (Collectible.list().get(i).isAppear()) {
+                g2D.setColor(Color.PINK);
+                g2D.fillOval(
+                        (int) Collectible.list().get(i).getX() - GAME_PANEL_X,
+                        (int) Collectible.list().get(i).getY() - GAME_PANEL_Y,
+                        COLLECTIBLE_SIZE,
+                        COLLECTIBLE_SIZE);
+            } else {
+                Collectible.list().remove(i);
+            }
+        }
+    }
+
+    private void setElapsedTime() {
+        elapsedTime = new Timer(1000, e -> {
+            if (second == 59) {
+                second = 0;
+                minute++;
+            } else {
+                second++;
+            }
+        });
+        elapsedTime.start();
     }
 
     private void setResizePanelTimer() {
@@ -167,45 +209,22 @@ public class GamePanel extends MyPanel {
         movePanelTimer.start();
     }
 
-    private void setMoveEpsilonTimer() {
-        moveEpsilonTimer = new Timer(20, e -> {
-            if (epsilon.isMovingUp()) epsilon.moveY(-EPSILON_SPEED);
-            if (epsilon.isMovingDown()) epsilon.moveY(EPSILON_SPEED);
-            if (epsilon.isMovingRight()) epsilon.moveX(EPSILON_SPEED);
-            if (epsilon.isMovingLeft()) epsilon.moveX(-EPSILON_SPEED);
-            repaint();
-        });
-    }
-
-    private void setMoveSquarantineTimer() {
-        for (Squarantine squarantine : Squarantine.list()) {
-            squarantine.setMoveTimer(new Timer(10, e -> {
-                setDirectionOfSquarantineMove(squarantine);
-                squarantine.move();
-                squarantine.updateVertices();
-                repaint();
-            }));
-            squarantine.getMoveTimer().start();
-        }
-    }
-
-    private void setDirectionOfSquarantineMove(Squarantine squarantine) {
-        double xEpsilon = epsilon.getX() + EPSILON_SIZE / 2.0;
-        double yEpsilon = epsilon.getY() + EPSILON_SIZE / 2.0;
-        double xSquarantine = squarantine.getX() + SQUARANTINE_SIZE / 2.0;
-        double ySquarantine = squarantine.getY() + SQUARANTINE_SIZE / 2.0;
+    public static void setDirectionOfEnemyMove(Enemy enemy) {
+        double xEpsilon = Epsilon.getInstance().getX() + EPSILON_SIZE / 2.0;
+        double yEpsilon = Epsilon.getInstance().getY() + EPSILON_SIZE / 2.0;
+        double xSquarantine = enemy.getX();
+        double ySquarantine = enemy.getY();
         double distance = Math.hypot(xEpsilon - xSquarantine, yEpsilon - ySquarantine);
-        squarantine.setXMove(SQUARANTINE_SPEED * (xEpsilon - xSquarantine) / distance);
-        squarantine.setYMove(SQUARANTINE_SPEED * (yEpsilon - ySquarantine) / distance);
+        enemy.setXMove(enemy.getSpeed() * (xEpsilon - xSquarantine) / distance);
+        enemy.setYMove(enemy.getSpeed() * (yEpsilon - ySquarantine) / distance);
     }
 
     private void setShootListener() {
         this.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                setDirectionOfShot(e);
+                setDirectionOfShot(e.getX() + GAME_PANEL_X, e.getY() + GAME_PANEL_Y);
                 setShootSound();
-                epsilonShoot();
             }
 
             @Override
@@ -230,15 +249,13 @@ public class GamePanel extends MyPanel {
         });
     }
 
-    private void setDirectionOfShot(MouseEvent e) {
+    private void setDirectionOfShot(double xClicked, double yClicked) {
         double xEpsilon = epsilon.getX() + EPSILON_SIZE / 2.0;
         double yEpsilon = epsilon.getY() + EPSILON_SIZE / 2.0;
-        double xClicked = e.getPoint().getX() + this.getX();
-        double yClicked = e.getPoint().getY() + this.getY();
         double distance = Math.hypot(xClicked - xEpsilon, yClicked - yEpsilon);
         double xMove = SHOT_SPEED * (xClicked - xEpsilon) / distance;
         double yMove = SHOT_SPEED * (yClicked - yEpsilon) / distance;
-        Shot.list().add(new Shot(xEpsilon - SHOT_SIZE / 2.0, yEpsilon - SHOT_SIZE / 2.0, xMove, yMove));
+        new Shot(xEpsilon - SHOT_SIZE / 2.0, yEpsilon - SHOT_SIZE / 2.0, xMove, yMove);
     }
 
     private void setShootSound() {
@@ -252,48 +269,7 @@ public class GamePanel extends MyPanel {
         }
     }
 
-    private void epsilonShoot() {
-        Shot shot = Shot.list().getLast();
-        shot.setMoveTimer(new Timer(15, e -> {
-            if (shot.getX() < GAME_PANEL_X) {
-                Collision.makeImpact(shot.getX(), shot.getY());
-                movingLeft = true;
-                movingRight = false;
-                increasePanelSize(Direction.LEFT);
-                shot.getMoveTimer().stop();
-                shot.setAppear(false);
-            }
-            if (shot.getX() + SHOT_SIZE > GAME_PANEL_X + GAME_PANEL_WIDTH) {
-                Collision.makeImpact(shot.getX(), shot.getY());
-                movingRight = true;
-                movingLeft = false;
-                increasePanelSize(Direction.RIGHT);
-                shot.getMoveTimer().stop();
-                shot.setAppear(false);
-            }
-            if (shot.getY() < GAME_PANEL_Y) {
-                Collision.makeImpact(shot.getX(), shot.getY());
-                movingUp = true;
-                movingDown = false;
-                increasePanelSize(Direction.UP);
-                shot.getMoveTimer().stop();
-                shot.setAppear(false);
-            }
-            if (shot.getY() + SHOT_SIZE > GAME_PANEL_Y + GAME_PANEL_HEIGHT) {
-                Collision.makeImpact(shot.getX(), shot.getY());
-                movingDown = true;
-                movingUp = false;
-                increasePanelSize(Direction.DOWN);
-                shot.getMoveTimer().stop();
-                shot.setAppear(false);
-            }
-            shot.move();
-            repaint();
-        }));
-        shot.getMoveTimer().start();
-    }
-
-    private void increasePanelSize(Direction direction) {
+    public void increasePanelSize(Direction direction) {
 //        Timer increase = new Timer(20, e -> {
 //            switch (direction) {
 //                case Direction.UP:
@@ -326,7 +302,8 @@ public class GamePanel extends MyPanel {
 //        end.start();
     }
 
-    private void setKeyListener() {
+    //TODO ADD STORE KEY LISTENER
+    public void setKeyListener() {
         this.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -348,12 +325,16 @@ public class GamePanel extends MyPanel {
                     case KeyEvent.VK_A:
                         epsilon.setMovingLeft(true);
                         break;
+                    case KeyEvent.VK_H:
+                        showHUI();
+                        break;
+
 //                    case KeyEvent.VK_P:
 //                        pauseGamePanel();
 //                        break;
                 }
-                if (!moveEpsilonTimer.isRunning()) {
-                    moveEpsilonTimer.start();
+                if (!epsilon.isRunning()) {
+                    epsilon.startMove();
 //                    setEpsilonAcceleration();
                 }
             }
@@ -376,11 +357,20 @@ public class GamePanel extends MyPanel {
                         break;
                 }
                 if (!epsilon.isMovingUp() && !epsilon.isMovingDown() && !epsilon.isMovingRight()
-                        && !epsilon.isMovingLeft() && moveEpsilonTimer.isRunning()) {
-                    moveEpsilonTimer.stop();
+                        && !epsilon.isMovingLeft() && epsilon.isRunning()) {
+                    epsilon.stopMove();
                 }
             }
         });
+    }
+
+    private void showHUI() {
+        showHUI = true;
+        Timer end = new Timer(3000, a -> {
+            showHUI = false;
+        });
+        end.setRepeats(false);
+        end.start();
     }
 
     //TODO ACCELERATION
@@ -395,21 +385,31 @@ public class GamePanel extends MyPanel {
 
     //TODO ADD EVERYTHING THAT MAKE NEW TO PAUSE AND RESUME
     private void pauseGamePanel() {
-        resizePanelTimer.stop();
-        moveEpsilonTimer.stop();
-        for (Shot shot : Shot.list()) {
-            shot.getMoveTimer().stop();
+        for (Entity entity : Entity.getEntities()) {
+            entity.stopMove();
         }
+        for (Shot shot : Shot.list()) {
+            shot.stopMove();
+        }
+//        Collision.stopCheckCollision();
+        StorePanel.makeNew();
+        this.setEnabled(false);
         this.setVisible(false);
-        StorePanel.getInstance().setVisible(true);
     }
 
-    public ArrayList<Entity> getEntities() {
-        return entities;
+    public void setMovingUp(boolean movingUp) {
+        this.movingUp = movingUp;
     }
 
-    public ArrayList<Entity> getEnemies() {
-        return enemies;
+    public void setMovingDown(boolean movingDown) {
+        this.movingDown = movingDown;
     }
 
+    public void setMovingRight(boolean movingRight) {
+        this.movingRight = movingRight;
+    }
+
+    public void setMovingLeft(boolean movingLeft) {
+        this.movingLeft = movingLeft;
+    }
 }

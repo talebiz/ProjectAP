@@ -10,9 +10,11 @@ public class Constant {
             "src/main/resources/epsilon.png").getImage();
     public static final int EPSILON_SIZE = 45;
     public static int EPSILON_SPEED = 10;
+    public static int EPSILON_HP = 100;
+
 
     //Shot
-    public static final int SHOT_SPEED = 15;
+    public static final int SHOT_SPEED = 20;
     public static final int SHOT_SIZE = 15;
     public static final File SHOOT_SOUND = new File("src/main/resources/Glug.wav").getAbsoluteFile();
 
@@ -23,6 +25,13 @@ public class Constant {
     public static int SQUARANTINE_SPEED = 2;
     public static int SQUARANTINE_HP = 10;
 
+    //Trigorath
+    public static final int TRIGORATH_SIZE = 13;
+    public static int TRIGORATH_SPEED = 2;
+    public static int TRIGORATH_HP = 15;
+
+    //Collectible
+    public static final int COLLECTIBLE_SIZE = 10;
 
     //Frame
     public static final Dimension FRAME_SIZE = Toolkit.getDefaultToolkit().getScreenSize();

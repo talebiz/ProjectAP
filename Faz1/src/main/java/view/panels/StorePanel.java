@@ -1,5 +1,7 @@
 package view.panels;
 
+import model.Entity;
+import model.Epsilon;
 import model.Shot;
 
 import javax.swing.*;
@@ -27,6 +29,10 @@ public class StorePanel extends MyPanel {
         return storePanel;
     }
 
+    public static void makeNew() {
+        storePanel = new StorePanel();
+    }
+
     @Override
     protected void setContent() {
         setKeyListener();
@@ -52,12 +58,13 @@ public class StorePanel extends MyPanel {
     }
 
     private void resumeGamePanel() {
-        GamePanel.getInstance().resizePanelTimer.start();
-        GamePanel.getInstance().moveEpsilonTimer.start();
-        for (Shot shot : Shot.list()) {
-            shot.getMoveTimer().start();
-        }
         this.setVisible(false);
-        GamePanel.getInstance().setVisible(true);
+        for (Entity entity : Entity.getEntities()) {
+            entity.startMove();
+        }
+        for (Shot shot : Shot.list()) {
+            shot.startMove();
+        }
+        GamePanel.makeNew();
     }
 }
