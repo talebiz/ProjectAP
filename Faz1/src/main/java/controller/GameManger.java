@@ -1,23 +1,17 @@
 package controller;
 
-import view.MyFrame;
-import view.panels.GamePanel;
 import view.panels.MainMenuPanel;
-import view.panels.MyPanel;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
 public class GameManger {
     private static GameManger gameManger;
-    MyPanel currentPanel;
+    int totalXP;
 
     private GameManger() {
-//        TODO UNCOMMENT "minimizeAllTabs()"
-//        minimizeAllTabs();
-        //TODO CHANGE "new GamePanel()" TO "new MainMenuPanel()"
-        GamePanel.getInstance();
-//        frame.add(currentPanel);
+        minimizeAllTabs();
+        MainMenuPanel.getInstance().setVisible(true);
     }
 
     public static GameManger getInstance() {
@@ -43,14 +37,5 @@ public class GameManger {
         } catch (AWTException e) {
             throw new RuntimeException(e);
         }
-    }
-
-
-    public MyPanel getCurrentPanel() {
-        return currentPanel;
-    }
-
-    public void setCurrentPanel(MyPanel currentPanel) {
-        this.currentPanel = currentPanel;
     }
 }

@@ -1,5 +1,6 @@
 package model;
 
+import javax.swing.*;
 import java.util.ArrayList;
 
 import static controller.Util.Constant.*;
@@ -14,6 +15,18 @@ public class Squarantine extends Enemy {
         HP = SQUARANTINE_HP;
         squarantines.add(this);
         setVertices();
+        setSpecialMove();
+    }
+
+    private void setSpecialMove() {
+        Timer timer = new Timer(5000, e -> {
+            if (SQUARANTINE_SPEED == 2) {
+                SQUARANTINE_SPEED = 3;
+            } else {
+                SQUARANTINE_SPEED = 2;
+            }
+        });
+        timer.start();
     }
 
     public static ArrayList<Squarantine> list() {

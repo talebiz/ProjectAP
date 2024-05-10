@@ -41,12 +41,10 @@ public class Shot {
 
     private void checkCollisionToWall(GamePanel gamePanel) {
         if (x < GAME_PANEL_X) {
-            Collision.makeImpact(x, y);
+            Collision.makeImpact(x, y, null);
             gamePanel.setMovingLeft(true);
             gamePanel.setMovingRight(false);
-            Timer end = new Timer(3000, a -> {
-                gamePanel.setMovingLeft(false);
-            });
+            Timer end = new Timer(3000, a -> gamePanel.setMovingLeft(false));
             end.setRepeats(false);
             end.start();
             gamePanel.increasePanelSize(Direction.LEFT);
@@ -54,12 +52,10 @@ public class Shot {
             appear = false;
         }
         if (x + SHOT_SIZE > GAME_PANEL_X + GAME_PANEL_WIDTH) {
-            Collision.makeImpact(x, y);
+            Collision.makeImpact(x, y, null);
             gamePanel.setMovingRight(true);
             gamePanel.setMovingLeft(false);
-            Timer end = new Timer(3000, a -> {
-                gamePanel.setMovingRight(false);
-            });
+            Timer end = new Timer(3000, a -> gamePanel.setMovingRight(false));
             end.setRepeats(false);
             end.start();
             gamePanel.increasePanelSize(Direction.RIGHT);
@@ -67,12 +63,10 @@ public class Shot {
             appear = false;
         }
         if (y < GAME_PANEL_Y) {
-            Collision.makeImpact(x, y);
+            Collision.makeImpact(x, y, null);
             gamePanel.setMovingUp(true);
             gamePanel.setMovingDown(false);
-            Timer end = new Timer(3000, a -> {
-                gamePanel.setMovingUp(false);
-            });
+            Timer end = new Timer(3000, a -> gamePanel.setMovingUp(false));
             end.setRepeats(false);
             end.start();
             gamePanel.increasePanelSize(Direction.UP);
@@ -80,12 +74,10 @@ public class Shot {
             appear = false;
         }
         if (y + SHOT_SIZE > GAME_PANEL_Y + GAME_PANEL_HEIGHT) {
-            Collision.makeImpact(x, y);
+            Collision.makeImpact(x, y, null);
             gamePanel.setMovingDown(true);
             gamePanel.setMovingUp(false);
-            Timer end = new Timer(3000, a -> {
-                gamePanel.setMovingDown(false);
-            });
+            Timer end = new Timer(3000, a -> gamePanel.setMovingDown(false));
             end.setRepeats(false);
             end.start();
             gamePanel.increasePanelSize(Direction.DOWN);
@@ -94,9 +86,6 @@ public class Shot {
         }
     }
 
-    public int getSize() {
-        return SHOT_SIZE;
-    }
 
     public void startMove() {
         moveTimer.start();
@@ -106,37 +95,17 @@ public class Shot {
         moveTimer.stop();
     }
 
-    public void setMoveTimer(Timer moveTimer) {
-        this.moveTimer = moveTimer;
-    }
-
     public double getX() {
         return x;
-    }
-
-    public void setX(double x) {
-        this.x = x;
     }
 
     public double getY() {
         return y;
     }
 
-    public void setY(double y) {
-        this.y = y;
-    }
-
     public void move() {
         x += xMove;
         y += yMove;
-    }
-
-    public double getXMove() {
-        return xMove;
-    }
-
-    public double getYMove() {
-        return yMove;
     }
 
     public boolean isAppear() {

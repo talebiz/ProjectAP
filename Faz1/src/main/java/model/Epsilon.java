@@ -15,6 +15,7 @@ public class Epsilon extends Entity {
     public Epsilon(int x, int y) {
         super(x, y);
         HP = EPSILON_HP;
+        XP = 0;
     }
 
     public static Epsilon getInstance() {
@@ -91,11 +92,7 @@ public class Epsilon extends Entity {
         return XP;
     }
 
-    public void setXP(int XP) {
-        this.XP = XP;
-    }
-
-    public void takeXP() {
-        XP += 5;
+    public void takeXP(int amount) {
+        XP += amount;
     }
 }

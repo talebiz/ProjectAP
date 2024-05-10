@@ -13,9 +13,7 @@ public class Collectible {
         this.y = y;
         appear = true;
         collectibles.add(this);
-        Timer remove = new Timer(10000, e -> {
-           appear = false;
-        });
+        Timer remove = new Timer(10000, e -> appear = false);
         remove.setRepeats(false);
         remove.start();
     }

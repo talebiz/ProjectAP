@@ -8,7 +8,7 @@ public class Constant {
     //Epsilon
     public static final Image EPSILON_IMAGE = new ImageIcon(
             "src/main/resources/epsilon.png").getImage();
-    public static final int EPSILON_SIZE = 45;
+    public static int EPSILON_SIZE = 45;
     public static int EPSILON_SPEED = 10;
     public static int EPSILON_HP = 100;
 
@@ -19,8 +19,6 @@ public class Constant {
     public static final File SHOOT_SOUND = new File("src/main/resources/Glug.wav").getAbsoluteFile();
 
     //Squarantine
-    public static final Image SQUARANTINE_IMAGE = new ImageIcon(
-            "src/main/resources/squarantine.png").getImage();
     public static final int SQUARANTINE_SIZE = 20;
     public static int SQUARANTINE_SPEED = 2;
     public static int SQUARANTINE_HP = 10;
@@ -30,15 +28,12 @@ public class Constant {
     public static int TRIGORATH_SPEED = 2;
     public static int TRIGORATH_HP = 15;
 
-    //Collectible
-    public static final int COLLECTIBLE_SIZE = 10;
-
     //Frame
     public static final Dimension FRAME_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
 
-    //Main Menu Panel
-    public static final Dimension MAIN_MENU_PANEL_SIZE = new Dimension(1000, 800);
-    public static final Point MAIN_MENU_PANEL_LOCATION = new Point((int) (FRAME_SIZE.getWidth() / 2 - 500),
+    //Panel
+    public static final Dimension NORMAL_PANEL_SIZE = new Dimension(1000, 800);
+    public static final Point NORMAL_PANEL_LOCATION = new Point((int) (FRAME_SIZE.getWidth() / 2 - 500),
             (int) (FRAME_SIZE.getHeight() / 2 - 400));
 
     //Game Panel
@@ -47,4 +42,9 @@ public class Constant {
     public static int GAME_PANEL_X = 400;
     public static int GAME_PANEL_Y = 150;
     public static int GAME_PANEL_SPEED = 1;
+
+    //Store Panel
+    public static final Dimension STORE_PANEL_SIZE = new Dimension(800, 500);
+    public static final Point STORE_PANEL_LOCATION = new Point((int) (FRAME_SIZE.getWidth() / 2 - 400),
+            (int) (FRAME_SIZE.getHeight() / 2 - 250));
 }

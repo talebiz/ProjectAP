@@ -5,8 +5,12 @@ import view.panels.GamePanel;
 
 import static controller.Util.Constant.*;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.util.ArrayList;
 
 public class Collision {
@@ -14,7 +18,6 @@ public class Collision {
     static private final Epsilon epsilon = Epsilon.getInstance();
     static private final ArrayList<Squarantine> squarantines = Squarantine.list();
     static private final ArrayList<Trigorath> trigoraths = Trigorath.list();
-
 
     public static void startCheckCollision() {
         checkCollisionTimer = new Timer(50, e -> {
@@ -34,7 +37,8 @@ public class Collision {
         checkCollisionTimer.stop();
     }
 
-    public static void makeImpact(double x, double y) {
+    public static void makeImpact(double x, double y, File sound) {
+        playCollisionSound(sound);
         for (Entity entity : Entity.getEntities()) {
             double xEntity = entity.getX() + entity.getSize() / 2.0;
             double yEntity = entity.getY() + entity.getSize() / 2.0;
@@ -65,9 +69,13 @@ public class Collision {
                 if (distance < EPSILON_SIZE / 2.0) {
                     double xCollision = (epsilon.getX() + EPSILON_SIZE / 2.0 + enemy.getX()) / 2.0;
                     double yCollision = (epsilon.getY() + EPSILON_SIZE / 2.0 + enemy.getY()) / 2.0;
-                    makeImpact(xCollision, yCollision);
+                    makeImpact(xCollision, yCollision, null);
                     if (enemy instanceof Squarantine) epsilon.damage(6);
                     else if (enemy instanceof Trigorath) epsilon.damage(10);
+                    if (epsilon.getHP() <= 0) {
+                        GameManger.getInstance().totalXP += Epsilon.getInstance().getXP();
+                        GamePanel.getInstance().closeGame();
+                    }
                 }
             }
         }
@@ -86,9 +94,10 @@ public class Collision {
                 Rectangle square2 = new Rectangle(x2 - SQUARANTINE_SIZE, y2 - SQUARANTINE_SIZE,
                         2 * SQUARANTINE_SIZE, SQUARANTINE_SIZE * 2);
                 if (square1.intersects(square2)) {
+                    SQUARANTINE_SPEED = 2;
                     double xCollision = (x1 + x2) / 2.0;
                     double yCollision = (y1 + y2) / 2.0;
-                    makeImpact(xCollision, yCollision);
+                    makeImpact(xCollision, yCollision, null);
                 }
             }
         }
@@ -106,9 +115,10 @@ public class Collision {
                     epsilon.getY(),
                     EPSILON_SIZE);
             if (distanceSquared <= EPSILON_SIZE / 2.0 * EPSILON_SIZE / 2.0) {
+                SQUARANTINE_SPEED = 2;
                 double xCollision = (epsilon.getX() + EPSILON_SIZE / 2.0 + squarantine.getX()) / 2.0;
                 double yCollision = (epsilon.getY() + EPSILON_SIZE / 2.0 + squarantine.getY()) / 2.0;
-                makeImpact(xCollision, yCollision);
+                makeImpact(xCollision, yCollision, null);
             }
         }
     }
@@ -147,7 +157,7 @@ public class Collision {
                 if (n1 || n2 || n3 || n4 || n5 || n6 || n7 || n8 || n9) {
                     double xCollision = (trigorath1.getX() + trigorath2.getX()) / 2.0;
                     double yCollision = (trigorath1.getY() + trigorath2.getY()) / 2.0;
-                    makeImpact(xCollision, yCollision);
+                    makeImpact(xCollision, yCollision, null);
                 }
             }
         }
@@ -182,7 +192,7 @@ public class Collision {
             if (n1 || n2 || n3) {
                 double xCollision = (x + trigorath.getX()) / 2.0;
                 double yCollision = (y + trigorath.getY()) / 2.0;
-                makeImpact(xCollision, yCollision);
+                makeImpact(xCollision, yCollision, null);
             }
         }
     }
@@ -216,9 +226,10 @@ public class Collision {
                 boolean n12 = isTwoLinesCollision(sx3, sy3, sx4, sy4, tx2, ty2, tx3, ty3);
 
                 if (n1 || n2 || n3 || n4 || n5 || n6 || n7 || n8 || n9 || n10 || n11 || n12) {
+                    SQUARANTINE_SPEED = 2;
                     double xCollision = (squarantine.getX() + trigorath.getX()) / 2.0;
                     double yCollision = (squarantine.getY() + trigorath.getY()) / 2.0;
-                    makeImpact(xCollision, yCollision);
+                    makeImpact(xCollision, yCollision, null);
                 }
             }
         }
@@ -252,7 +263,7 @@ public class Collision {
                         SHOT_SIZE);
                 if (distanceSquared <= SHOT_SIZE / 2.0 * SHOT_SIZE / 2.0) {
                     shot.stopMove();
-                    makeImpact(shot.getX(), shot.getY());
+                    makeImpact(shot.getX(), shot.getY(), null);
                     shot.setAppear(false);
                     squarantine.damage(5);
                     if (squarantine.getHP() <= 0) {
@@ -276,14 +287,14 @@ public class Collision {
                 int y3 = trigorath.getYVertex(2) + GAME_PANEL_Y;
                 double x = shot.getX() + SHOT_SIZE / 2.0;
                 double y = shot.getY() + SHOT_SIZE / 2.0;
-                boolean n1 = distanceOfEpsilonAndLine(x, y, x1, y1, x2, y2) < SHOT_SIZE / 2.0;
-                boolean n2 = distanceOfEpsilonAndLine(x, y, x1, y1, x3, y3) < SHOT_SIZE / 2.0;
-                boolean n3 = distanceOfEpsilonAndLine(x, y, x2, y2, x3, y3) < SHOT_SIZE / 2.0;
+                boolean n1 = distanceOfEpsilonAndLine(x, y, x1, y1, x2, y2) < SHOT_SIZE;
+                boolean n2 = distanceOfEpsilonAndLine(x, y, x1, y1, x3, y3) < SHOT_SIZE;
+                boolean n3 = distanceOfEpsilonAndLine(x, y, x2, y2, x3, y3) < SHOT_SIZE;
                 if (n1 || n2 || n3) {
                     shot.stopMove();
                     double xCollision = (x + trigorath.getX()) / 2.0;
                     double yCollision = (y + trigorath.getY()) / 2.0;
-                    makeImpact(xCollision, yCollision);
+                    makeImpact(xCollision, yCollision, null);
                     shot.setAppear(false);
                     trigorath.damage(5);
                     if (trigorath.getHP() <= 0) {
@@ -292,7 +303,7 @@ public class Collision {
                                 trigorath.getX() - 7,
                                 trigorath.getY());
                         new Collectible(
-                                trigorath.getX() + 7 ,
+                                trigorath.getX() + 7,
                                 trigorath.getY());
                     }
                 }
@@ -306,8 +317,19 @@ public class Collision {
         for (Collectible collectible : Collectible.list()) {
             if (Math.abs(collectible.getX() - xEpsilon) < 70 && Math.abs(collectible.getY() - yEpsilon) < 70) {
                 collectible.setAppear(false);
-                epsilon.takeXP();
+                epsilon.takeXP(5);
             }
+        }
+    }
+
+    private static void playCollisionSound(File sound) {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(sound);
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+        } catch (Exception ex) {
+            System.out.println("Error with playing sound.");
         }
     }
 }

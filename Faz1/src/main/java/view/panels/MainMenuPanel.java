@@ -1,35 +1,24 @@
 package view.panels;
 
-import model.Epsilon;
-
 import javax.swing.*;
 import java.awt.*;
 
 import static controller.Util.Constant.*;
 
 public class MainMenuPanel extends MyPanel {
-    JButton exitButton, startButton, settingButton, tutorialButton,skillTreeButton;
-    Epsilon epsilon;
-    Timer moveEpsilonTimer;
-    int XMoveLength = -EPSILON_SPEED, YMoveLength = -EPSILON_SPEED;
+    private static MainMenuPanel mainMenuPanel;
+    JButton exitButton, startButton, settingButton, tutorialButton, skillTreeButton;
 
-    public MainMenuPanel() {
+    private MainMenuPanel() {
         super();
-        this.setSize(MAIN_MENU_PANEL_SIZE);
-        this.setLocation(MAIN_MENU_PANEL_LOCATION);
-        epsilon = new Epsilon(900, 700);
+        this.setSize(NORMAL_PANEL_SIZE);
+        this.setLocation(NORMAL_PANEL_LOCATION);
         this.setContent();
     }
 
-    @Override
-    public void paintComponent(Graphics g) {
-        Graphics2D g2D = (Graphics2D) g;
-        g2D.drawImage(EPSILON_IMAGE,
-                (int) epsilon.getX(),
-                (int) epsilon.getY(),
-                EPSILON_SIZE,
-                EPSILON_SIZE,
-                null);
+    public static MainMenuPanel getInstance() {
+        if (mainMenuPanel == null) mainMenuPanel = new MainMenuPanel();
+        return mainMenuPanel;
     }
 
     @Override
@@ -39,23 +28,7 @@ public class MainMenuPanel extends MyPanel {
         setSettingButton();
         setTutorialButton();
         setSkillTreeButton();
-        setEpsilon();
     }
-
-    private void setEpsilon() {
-        moveEpsilonTimer = new Timer(10, e -> {
-            if (epsilon.getX() < 0) XMoveLength *= -1;
-            if (epsilon.getX() + 45 > 1000) XMoveLength *= -1;
-            if (epsilon.getY() < 0) YMoveLength *= -1;
-            if (epsilon.getY() + 45 > 800) YMoveLength *= -1;
-            epsilon.moveX(XMoveLength);
-           epsilon.moveY(YMoveLength);
-           repaint();
-        });
-        moveEpsilonTimer.start();
-    }
-
-
 
     private void setExitButton() {
         exitButton = new JButton("exit");
@@ -70,9 +43,8 @@ public class MainMenuPanel extends MyPanel {
         startButton.setBounds(730, 130, 150, 80);
         startButton.setFont(new Font("", Font.BOLD, 20));
         startButton.addActionListener(e -> {
-//            GameManger.getInstance().getCurrentPanel().setVisible(false);
             this.setVisible(false);
-            GamePanel.getInstance();
+            GamePanel.getInstance().makeNew();
         });
         add(startButton);
     }
@@ -81,7 +53,10 @@ public class MainMenuPanel extends MyPanel {
         settingButton = new JButton("Settings");
         settingButton.setBounds(530, 280, 150, 80);
         settingButton.setFont(new Font("", Font.BOLD, 20));
-        settingButton.addActionListener(e -> System.exit(0));
+        settingButton.addActionListener(e -> {
+            this.setVisible(false);
+            SettingsPanel.getInstance().setVisible(true);
+        });
         add(settingButton);
     }
 

@@ -6,7 +6,7 @@ import javax.swing.*;
 
 import java.util.ArrayList;
 
-import static view.panels.GamePanel.setDirectionOfEnemyMove;
+import static controller.Util.Constant.EPSILON_SIZE;
 
 public abstract class Enemy extends Entity {
     private static final ArrayList<Enemy> enemies = new ArrayList<>();
@@ -29,12 +29,20 @@ public abstract class Enemy extends Entity {
     @Override
     public void setMoveTimer() {
         moveTimer = new Timer(10, e -> {
-            setDirectionOfEnemyMove(this);
+            setDirectionOfEnemyMove();
             move();
             updateVertices();
             GamePanel.getInstance().repaint();
         });
         moveTimer.start();
+    }
+
+    private void setDirectionOfEnemyMove() {
+        double xEpsilon = Epsilon.getInstance().getX() + EPSILON_SIZE / 2.0;
+        double yEpsilon = Epsilon.getInstance().getY() + EPSILON_SIZE / 2.0;
+        double distance = Math.hypot(xEpsilon - x, yEpsilon - y);
+        xMove = getSpeed() * (xEpsilon - x) / distance;
+        yMove = getSpeed() * (yEpsilon - y) / distance;
     }
 
     @Override
@@ -61,21 +69,5 @@ public abstract class Enemy extends Entity {
 
     public int getYVertex(int index) {
         return yVertex[index];
-    }
-
-    public double getXMove() {
-        return xMove;
-    }
-
-    public void setXMove(double xMove) {
-        this.xMove = xMove;
-    }
-
-    public double getYMove() {
-        return yMove;
-    }
-
-    public void setYMove(double yMove) {
-        this.yMove = yMove;
     }
 }

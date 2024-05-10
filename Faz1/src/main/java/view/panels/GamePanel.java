@@ -1,6 +1,7 @@
 package view.panels;
 
 import controller.Collision;
+import controller.EnemyBuilder;
 import controller.Util.Direction;
 import model.*;
 
@@ -10,6 +11,7 @@ import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.TimerTask;
 
 import static controller.Util.Constant.*;
 
@@ -20,23 +22,19 @@ public class GamePanel extends MyPanel {
     Timer movePanelTimer;
     private final Epsilon epsilon;
     private boolean movingUp, movingDown, movingRight, movingLeft;
-    int minute, second, wave;
-    private boolean showHUI;
-
+    private int minute, second, wave;
+    private boolean showWave;
+    private boolean isAthenaEmpower;
 
     private GamePanel() {
         super();
         this.setFocusable(true);
         this.requestFocusInWindow();
-        this.setSize(GAME_PANEL_WIDTH, GAME_PANEL_HEIGHT);
-        this.setLocation(GAME_PANEL_X, GAME_PANEL_Y);
+        this.setSize(NORMAL_PANEL_SIZE);
+        this.setLocation(NORMAL_PANEL_LOCATION);
         epsilon = Epsilon.getInstance();
-//        new Squarantine(800, 800);
-//        new Squarantine(1000, 150);
-//        new Squarantine(1000, 800);
-//        new Trigorath(1000, 800);
-//        new Trigorath(1000, 300);
-        Collision.startCheckCollision();
+        wave = 1;
+        showWave = true;
         setContent();
     }
 
@@ -45,13 +43,21 @@ public class GamePanel extends MyPanel {
         return gamePanel;
     }
 
-    public static void makeNew() {
-        gamePanel = new GamePanel();
+    public void makeNew() {
+        this.setVisible(true);
+        this.setKeyListener();
+        this.setSize(NORMAL_PANEL_SIZE);
+        this.setLocation(NORMAL_PANEL_LOCATION);
+        epsilon.setX(1000);
+        epsilon.setY(500);
+        wave = 1;
+        Collision.startCheckCollision();
+        EnemyBuilder.build(wave);
     }
 
     @Override
     protected void setContent() {
-//        setResizePanelTimer();
+        setResizePanelTimer();
         setMovePanelTimer();
         setElapsedTime();
         setKeyListener();
@@ -62,12 +68,13 @@ public class GamePanel extends MyPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2D = (Graphics2D) g;
-        if (showHUI) drawHUI(g2D);
+        drawHUI(g2D);
         drawEpsilon(g2D);
         drawShots(g2D);
         drawSquarantine(g2D);
         drawTrigorath(g2D);
         drawCollectible(g2D);
+        if (showWave) drawWave(g2D);
     }
 
     private void drawHUI(Graphics2D g2D) {
@@ -105,13 +112,12 @@ public class GamePanel extends MyPanel {
 
     private void drawSquarantine(Graphics2D g2D) {
         for (int i = 0; i < Squarantine.list().size(); i++) {
+            Squarantine squarantine = Squarantine.list().get(i);
             if (Squarantine.list().get(i).isAppear()) {
-                Squarantine squarantine = Squarantine.list().get(i);
                 g2D.setStroke(new BasicStroke(6));
                 g2D.setColor(Color.GREEN);
                 g2D.drawPolygon(squarantine.getXVertex(), squarantine.getYVertex(), 4);
             } else {
-                Squarantine squarantine = Squarantine.list().get(i);
                 Squarantine.list().remove(squarantine);
                 Enemy.getEnemies().remove(squarantine);
                 Entity.getEntities().remove(squarantine);
@@ -121,13 +127,12 @@ public class GamePanel extends MyPanel {
 
     private void drawTrigorath(Graphics2D g2D) {
         for (int i = 0; i < Trigorath.list().size(); i++) {
+            Trigorath trigorath = Trigorath.list().get(i);
             if (Trigorath.list().get(i).isAppear()) {
-                Trigorath trigorath = Trigorath.list().get(i);
                 g2D.setStroke(new BasicStroke(6));
                 g2D.setColor(Color.YELLOW);
                 g2D.drawPolygon(trigorath.getXVertex(), trigorath.getYVertex(), 3);
             } else {
-                Trigorath trigorath = Trigorath.list().get(i);
                 Trigorath.list().remove(trigorath);
                 Enemy.getEnemies().remove(trigorath);
                 Entity.getEntities().remove(trigorath);
@@ -139,15 +144,21 @@ public class GamePanel extends MyPanel {
         for (int i = 0; i < Collectible.list().size(); i++) {
             if (Collectible.list().get(i).isAppear()) {
                 g2D.setColor(Color.PINK);
-                g2D.fillOval(
+                g2D.drawString("☘︎",
                         (int) Collectible.list().get(i).getX() - GAME_PANEL_X,
-                        (int) Collectible.list().get(i).getY() - GAME_PANEL_Y,
-                        COLLECTIBLE_SIZE,
-                        COLLECTIBLE_SIZE);
+                        (int) Collectible.list().get(i).getY() - GAME_PANEL_Y);
             } else {
                 Collectible.list().remove(i);
             }
         }
+    }
+
+    private void drawWave(Graphics2D g2D) {
+        g2D.setColor(Color.WHITE);
+        g2D.setFont(new Font("", Font.BOLD, 50));
+        g2D.drawString("Wave " + wave,
+                GAME_PANEL_WIDTH / 2 - 100,
+                GAME_PANEL_HEIGHT / 2);
     }
 
     private void setElapsedTime() {
@@ -158,6 +169,7 @@ public class GamePanel extends MyPanel {
             } else {
                 second++;
             }
+            repaint();
         });
         elapsedTime.start();
     }
@@ -209,16 +221,6 @@ public class GamePanel extends MyPanel {
         movePanelTimer.start();
     }
 
-    public static void setDirectionOfEnemyMove(Enemy enemy) {
-        double xEpsilon = Epsilon.getInstance().getX() + EPSILON_SIZE / 2.0;
-        double yEpsilon = Epsilon.getInstance().getY() + EPSILON_SIZE / 2.0;
-        double xSquarantine = enemy.getX();
-        double ySquarantine = enemy.getY();
-        double distance = Math.hypot(xEpsilon - xSquarantine, yEpsilon - ySquarantine);
-        enemy.setXMove(enemy.getSpeed() * (xEpsilon - xSquarantine) / distance);
-        enemy.setYMove(enemy.getSpeed() * (yEpsilon - ySquarantine) / distance);
-    }
-
     private void setShootListener() {
         this.addMouseListener(new MouseListener() {
             @Override
@@ -255,7 +257,23 @@ public class GamePanel extends MyPanel {
         double distance = Math.hypot(xClicked - xEpsilon, yClicked - yEpsilon);
         double xMove = SHOT_SPEED * (xClicked - xEpsilon) / distance;
         double yMove = SHOT_SPEED * (yClicked - yEpsilon) / distance;
-        new Shot(xEpsilon - SHOT_SIZE / 2.0, yEpsilon - SHOT_SIZE / 2.0, xMove, yMove);
+        if (isAthenaEmpower) {
+            athenaEmpower(xEpsilon, yEpsilon, xMove, yMove);
+        } else {
+            new Shot(xEpsilon - SHOT_SIZE / 2.0, yEpsilon - SHOT_SIZE / 2.0, xMove, yMove);
+        }
+    }
+
+    private void athenaEmpower(double xEpsilon, double yEpsilon, double xMove, double yMove) {
+        Timer timer = new Timer(50, e -> new Shot(
+                xEpsilon - SHOT_SIZE / 2.0,
+                yEpsilon - SHOT_SIZE / 2.0,
+                xMove,
+                yMove));
+        timer.start();
+        Timer end = new Timer(170, e -> timer.stop());
+        end.setRepeats(false);
+        end.start();
     }
 
     private void setShootSound() {
@@ -270,131 +288,142 @@ public class GamePanel extends MyPanel {
     }
 
     public void increasePanelSize(Direction direction) {
-//        Timer increase = new Timer(20, e -> {
-//            switch (direction) {
-//                case Direction.UP:
-//                    GAME_PANEL_HEIGHT += 4;
-//                    GAME_PANEL_Y -= 4;
-//                    break;
-//                case Direction.DOWN:
-//                    GAME_PANEL_HEIGHT += 4;
-//                    break;
-//                case Direction.RIGHT:
-//                    GAME_PANEL_WIDTH += 4;
-//                    break;
-//                case Direction.LEFT:
-//                    GAME_PANEL_WIDTH += 4;
-//                    GAME_PANEL_X -= 4;
-//                    break;
-//            }
-//            this.setBounds(
-//                    GAME_PANEL_X,
-//                    GAME_PANEL_Y,
-//                    GAME_PANEL_WIDTH,
-//                    GAME_PANEL_HEIGHT);
-//
-//        });
-//        increase.start();
-//        Timer end = new Timer(400, e -> {
-//            increase.stop();
-//        });
-//        end.setRepeats(false);
-//        end.start();
-    }
-
-    //TODO ADD STORE KEY LISTENER
-    public void setKeyListener() {
-        this.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
+        Timer increase = new Timer(20, e -> {
+            switch (direction) {
+                case Direction.UP:
+                    if (GAME_PANEL_Y > 0) {
+                        GAME_PANEL_HEIGHT += 4;
+                        GAME_PANEL_Y -= 4;
+                    }
+                    break;
+                case Direction.DOWN:
+                    if (GAME_PANEL_Y + GAME_PANEL_HEIGHT < FRAME_SIZE.getHeight()) {
+                        GAME_PANEL_HEIGHT += 4;
+                    }
+                    break;
+                case Direction.RIGHT:
+                    if (GAME_PANEL_X + GAME_PANEL_WIDTH < FRAME_SIZE.getWidth()) {
+                        GAME_PANEL_WIDTH += 4;
+                    }
+                    break;
+                case Direction.LEFT:
+                    if (GAME_PANEL_X > 0) {
+                        GAME_PANEL_WIDTH += 4;
+                        GAME_PANEL_X -= 4;
+                    }
+                    break;
             }
+            this.setBounds(
+                    GAME_PANEL_X,
+                    GAME_PANEL_Y,
+                    GAME_PANEL_WIDTH,
+                    GAME_PANEL_HEIGHT);
 
-            @Override
-            public void keyPressed(KeyEvent e) {
-                int keyCode = e.getKeyCode();
-                switch (keyCode) {
-                    case KeyEvent.VK_W:
-                        epsilon.setMovingUp(true);
-                        break;
-                    case KeyEvent.VK_S:
-                        epsilon.setMovingDown(true);
-                        break;
-                    case KeyEvent.VK_D:
-                        epsilon.setMovingRight(true);
-                        break;
-                    case KeyEvent.VK_A:
-                        epsilon.setMovingLeft(true);
-                        break;
-                    case KeyEvent.VK_H:
-                        showHUI();
-                        break;
-
-//                    case KeyEvent.VK_P:
-//                        pauseGamePanel();
-//                        break;
-                }
-                if (!epsilon.isRunning()) {
-                    epsilon.startMove();
-//                    setEpsilonAcceleration();
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                int keyCode = e.getKeyCode();
-                switch (keyCode) {
-                    case KeyEvent.VK_W:
-                        epsilon.setMovingUp(false);
-                        break;
-                    case KeyEvent.VK_S:
-                        epsilon.setMovingDown(false);
-                        break;
-                    case KeyEvent.VK_D:
-                        epsilon.setMovingRight(false);
-                        break;
-                    case KeyEvent.VK_A:
-                        epsilon.setMovingLeft(false);
-                        break;
-                }
-                if (!epsilon.isMovingUp() && !epsilon.isMovingDown() && !epsilon.isMovingRight()
-                        && !epsilon.isMovingLeft() && epsilon.isRunning()) {
-                    epsilon.stopMove();
-                }
-            }
         });
-    }
-
-    private void showHUI() {
-        showHUI = true;
-        Timer end = new Timer(3000, a -> {
-            showHUI = false;
-        });
+        increase.start();
+        Timer end = new Timer(400, e -> increase.stop());
         end.setRepeats(false);
         end.start();
     }
 
-    //TODO ACCELERATION
-    private void setEpsilonAcceleration() {
-        EPSILON_SPEED = 5;
-        Timer acceleration = new Timer(100, e -> EPSILON_SPEED++);
-        acceleration.start();
-        Timer end = new Timer(1000, e -> acceleration.stop());
-        end.setRepeats(false);
-        end.start();
+    public void nextWave() {
+        wave++;
+        if (wave > 3) {
+            win();
+            return;
+        }
+        EnemyBuilder.build(wave);
+        showWave = true;
     }
 
-    //TODO ADD EVERYTHING THAT MAKE NEW TO PAUSE AND RESUME
+    private void win() {
+        resizePanelTimer.stop();
+        movePanelTimer.stop();
+        java.util.Timer timer = new java.util.Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (EPSILON_SIZE > 1000) timer.cancel();
+                epsilon.moveX(-2);
+                epsilon.moveY(-2);
+                EPSILON_SIZE += 4;
+            }
+        }, 10, 20);
+        java.util.Timer timer2 = new java.util.Timer();
+        timer2.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (GAME_PANEL_HEIGHT < 4 || GAME_PANEL_WIDTH < 4) {
+                    timer.cancel();
+                    closeGame();
+                }
+                GAME_PANEL_HEIGHT -= 2;
+                GAME_PANEL_Y++;
+                GAME_PANEL_WIDTH -= 2;
+                GAME_PANEL_X++;
+                GamePanel.this.setBounds(
+                        GAME_PANEL_X,
+                        GAME_PANEL_Y,
+                        GAME_PANEL_WIDTH,
+                        GAME_PANEL_HEIGHT);
+            }
+        }, 6000, 20);
+    }
+
+    public void closeGame() {
+        Entity.getEntities().clear();
+        Enemy.getEnemies().clear();
+        Squarantine.list().clear();
+        Trigorath.list().clear();
+        Collision.stopCheckCollision();
+        EnemyBuilder.stopBuild();
+        EnemyBuilder.amount = 0;
+        minute = 0;
+        second = 0;
+        setLocation(2000, 1500);
+        MainMenuPanel.getInstance().setVisible(true);
+    }
+
     private void pauseGamePanel() {
+        for (Entity entity : Entity.getEntities()) entity.stopMove();
+        for (Shot shot : Shot.list()) shot.stopMove();
+        movePanelTimer.stop();
+        resizePanelTimer.stop();
+        elapsedTime.stop();
+        Collision.stopCheckCollision();
+        EnemyBuilder.stopBuild();
+        setLocation(2000, 1500);
+        StorePanel.getInstance().setVisible(true);
+    }
+
+    public void resumeGamePanel() {
         for (Entity entity : Entity.getEntities()) {
-            entity.stopMove();
+            entity.startMove();
         }
         for (Shot shot : Shot.list()) {
-            shot.stopMove();
+            shot.startMove();
         }
-//        Collision.stopCheckCollision();
-        StorePanel.makeNew();
-        this.setEnabled(false);
-        this.setVisible(false);
+        movePanelTimer.start();
+        resizePanelTimer.start();
+        elapsedTime.start();
+        Collision.startCheckCollision();
+        EnemyBuilder.continueBuild();
+        setKeyListener();
+    }
+
+    //TODO ACCELERATION IN LISTENER CLASS ANH THIS METHOD
+//    private void setEpsilonAcceleration() {
+//        EPSILON_SPEED = 5;
+//        Timer acceleration = new Timer(50, e -> EPSILON_SPEED++);
+//        acceleration.start();
+//        Timer end = new Timer(500, e -> acceleration.stop());
+//        end.setRepeats(false);
+//        end.start();
+//    }
+
+    public void setKeyListener() {
+        this.requestFocusInWindow();
+        this.addKeyListener(new GameKeyListener());
     }
 
     public void setMovingUp(boolean movingUp) {
@@ -411,5 +440,68 @@ public class GamePanel extends MyPanel {
 
     public void setMovingLeft(boolean movingLeft) {
         this.movingLeft = movingLeft;
+    }
+
+    public void setShowWave(boolean showWave) {
+        this.showWave = showWave;
+    }
+
+    public void setAthenaEmpower(boolean athenaEmpower) {
+        isAthenaEmpower = athenaEmpower;
+    }
+
+    class GameKeyListener implements KeyListener {
+        @Override
+        public void keyTyped(KeyEvent e) {
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            int keyCode = e.getKeyCode();
+            switch (keyCode) {
+                case KeyEvent.VK_W:
+                    epsilon.setMovingUp(true);
+                    break;
+                case KeyEvent.VK_S:
+                    epsilon.setMovingDown(true);
+                    break;
+                case KeyEvent.VK_D:
+                    epsilon.setMovingRight(true);
+                    break;
+                case KeyEvent.VK_A:
+                    epsilon.setMovingLeft(true);
+                    break;
+                case KeyEvent.VK_P:
+                    pauseGamePanel();
+                    break;
+            }
+            if (!epsilon.isRunning()) {
+                epsilon.startMove();
+//                setEpsilonAcceleration();
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+            int keyCode = e.getKeyCode();
+            switch (keyCode) {
+                case KeyEvent.VK_W:
+                    epsilon.setMovingUp(false);
+                    break;
+                case KeyEvent.VK_S:
+                    epsilon.setMovingDown(false);
+                    break;
+                case KeyEvent.VK_D:
+                    epsilon.setMovingRight(false);
+                    break;
+                case KeyEvent.VK_A:
+                    epsilon.setMovingLeft(false);
+                    break;
+            }
+            if (!epsilon.isMovingUp() && !epsilon.isMovingDown() && !epsilon.isMovingRight()
+                    && !epsilon.isMovingLeft() && epsilon.isRunning()) {
+                epsilon.stopMove();
+            }
+        }
     }
 }
