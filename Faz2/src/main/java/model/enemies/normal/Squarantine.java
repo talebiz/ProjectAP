@@ -1,11 +1,11 @@
-package model.enemies;
+package model.enemies.normal;
 
 import controller.EntityData;
 import model.Epsilon;
+import model.enemies.Enemy;
 
 import javax.swing.*;
 import java.awt.geom.Line2D;
-import java.util.ArrayList;
 
 import static controller.Util.Constant.*;
 
@@ -25,16 +25,16 @@ public class Squarantine extends Enemy {
         hovering = false;
         exertion = false;
         dashing = false;
-        EntityData.addSquarantine(this);
         setSpecialMove();
+        EntityData.addSquarantine(this);
     }
 
     private void setSpecialMove() {
-         specialMoveTimer = new Timer(5000, e -> {
+        specialMoveTimer = new Timer(5000, e -> {
             if (dashing) {
-                SQUARANTINE_SPEED *= 2.0 / 3;
+                SQUARANTINE_SPEED = 0.15 * ENTITY_TIMER_PERIOD;
             } else {
-                SQUARANTINE_SPEED *= 3.0 / 2;
+                SQUARANTINE_SPEED = 0.25 * ENTITY_TIMER_PERIOD;
             }
             dashing = !dashing;
         });
@@ -43,19 +43,20 @@ public class Squarantine extends Enemy {
 
     @Override
     protected void setVertices() {
-        xVertex[0] = (int) (x - 0.5 * SQUARANTINE_SIZE);
-        yVertex[0] = (int) (y - 0.5 * SQUARANTINE_SIZE);
-        xVertex[1] = (int) (x + 0.5 * SQUARANTINE_SIZE);
-        yVertex[1] = (int) (y - 0.5 * SQUARANTINE_SIZE);
-        xVertex[2] = (int) (x + 0.5 * SQUARANTINE_SIZE);
-        yVertex[2] = (int) (y + 0.5 * SQUARANTINE_SIZE);
-        xVertex[3] = (int) (x - 0.5 * SQUARANTINE_SIZE);
-        yVertex[3] = (int) (y + 0.5 * SQUARANTINE_SIZE);
+        xVertex[0] = (int) (x - 0.5 * getSize());
+        yVertex[0] = (int) (y - 0.5 * getSize());
+        xVertex[1] = (int) (x + 0.5 * getSize());
+        yVertex[1] = (int) (y - 0.5 * getSize());
+        xVertex[2] = (int) (x + 0.5 * getSize());
+        yVertex[2] = (int) (y + 0.5 * getSize());
+        xVertex[3] = (int) (x - 0.5 * getSize());
+        yVertex[3] = (int) (y + 0.5 * getSize());
 
     }
 
     @Override
     public void dieProcess() {
+        super.dieProcess();
         moveTimer.stop();
         specialMoveTimer.stop();
         alive = false;
@@ -87,6 +88,20 @@ public class Squarantine extends Enemy {
     @Override
     public double getSpeed() {
         return SQUARANTINE_SPEED;
+    }
+
+    @Override
+    public void stopMove() {
+        super.stopMove();
+        moveTimer.stop();
+        specialMoveTimer.stop();
+    }
+
+    @Override
+    public void continueMove() {
+        super.continueMove();
+        moveTimer.start();
+        specialMoveTimer.start();
     }
 
     @Override

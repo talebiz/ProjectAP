@@ -15,6 +15,8 @@ public class Constant {
     public static int EPSILON_SIZE = 45;
     public static double EPSILON_SPEED = 0.5 * ENTITY_TIMER_PERIOD;
     public static int EPSILON_HP = 100;
+    public static double EPSILON_X;
+    public static double EPSILON_Y;
 
     //Shot
     public static final Image SHOT_EPSILON_IMAGE = new ImageIcon(
@@ -29,7 +31,7 @@ public class Constant {
     public static final Image SQUARANTINE_IMAGE = new ImageIcon(
             "src/main/resources/squarantine.png").getImage();
     public static final int SQUARANTINE_SIZE = 50;
-    public static double SQUARANTINE_SPEED = 0.15 * ENTITY_TIMER_PERIOD;
+    public static double SQUARANTINE_SPEED = 0.12 * ENTITY_TIMER_PERIOD;
     public static int SQUARANTINE_HP = 10;
     public static int SQUARANTINE_COLLECTIBLE_VALUE = 5;
     public static int SQUARANTINE_MELEE_DAMAGE = 6;
@@ -56,6 +58,18 @@ public class Constant {
     public static int OMENOCT_MELEE_DAMAGE = 8;
     public static int OMENOCT_COLLECTIBLE_NUMBER = 8;
     public static double OMENOCT_SHOT_SPEED = 0.3 * ENTITY_TIMER_PERIOD;
+    public static int OMENOCT_SHOT_DAMAGE = 4;
+
+    //Necropick
+    public static final Image NECROPICK_IMAGE = new ImageIcon(
+            "src/main/resources/necropick.png").getImage();
+    public static final Image NECROPICK2_IMAGE = new ImageIcon(
+            "src/main/resources/necropick2.png").getImage();
+    public static final int NECROPICK_SIZE = 60;
+    public static double NECROPICK_SPEED = 0.2 * ENTITY_TIMER_PERIOD;
+    public static int NECROPICK_HP = 10;
+    public static int NECROPICK_COLLECTIBLE_VALUE = 2;
+    public static int NECROPICK_COLLECTIBLE_NUMBER = 4;
 
     //Archmire
     public static final Image ARCHMIRE_IMAGE = new ImageIcon(
@@ -76,17 +90,6 @@ public class Constant {
     public static int ARCHMIRE_AOE_DAMAGE = 2;
     public static int MINI_ARCHMIRE_AOE_DAMAGE = ARCHMIRE_AOE_DAMAGE / 2;
 
-    //Necropick
-    public static final Image NECROPICK_IMAGE = new ImageIcon(
-            "src/main/resources/necropick.png").getImage();
-    public static final Image NECROPICK2_IMAGE = new ImageIcon(
-            "src/main/resources/necropick2.png").getImage();
-    public static final int NECROPICK_SIZE = 60;
-    public static double NECROPICK_SPEED = 0.2 * ENTITY_TIMER_PERIOD;
-    public static int NECROPICK_HP = 10;
-    public static int NECROPICK_COLLECTIBLE_VALUE = 2;
-    public static int NECROPICK_COLLECTIBLE_NUMBER = 4;
-
     //Wyrm
     public static final Image WYRM_IMAGE = new ImageIcon(
             "src/main/resources/wyrm.png").getImage();
@@ -96,6 +99,21 @@ public class Constant {
     public static int WYRM_COLLECTIBLE_VALUE = 8;
     public static int WYRM_COLLECTIBLE_NUMBER = 2;
     public static double WYRM_SHOT_SPEED = 0.3 * ENTITY_TIMER_PERIOD;
+
+    //Barricados
+    public static final Image BARRICADOS_IMAGE = new ImageIcon(
+            "src/main/resources/barricados.png").getImage();
+    public static final int BARRICADOS_SIZE = 140;
+    public static int BARRICADOS_HP = Integer.MAX_VALUE;
+
+    //Orb
+    public static final Image ORB_IMAGE = new ImageIcon(
+            "src/main/resources/orb.png").getImage();
+    public static final int ORB_SIZE = 60;
+    public static int ORB_HP = 30;
+    public static int ORB_COLLECTIBLE_VALUE = 30;
+    public static int ORB_COLLECTIBLE_NUMBER = 1;
+    public static int ORB_DISTANCE = 300;
 
     //Frame
     public static final Dimension FRAME_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
@@ -119,5 +137,5 @@ public class Constant {
 
     //Action Sounds
     public static File COLLECT_SOUND = new File("src/main/resources/Collect.wav");
-    public static File ENEMY_DAMAGE_SOUND = new File("src/main/resources/hit2.ogg");
+    public static File ENEMY_DAMAGE_SOUND = new File("src/main/resources/hit2.wav");
 }

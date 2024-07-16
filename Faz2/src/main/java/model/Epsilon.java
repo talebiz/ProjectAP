@@ -1,13 +1,11 @@
 package model;
 
-import view.panels.GamePanel;
-
 import javax.swing.*;
 
 import static controller.Util.Constant.*;
 
 public final class Epsilon extends Entity {
-    private static Epsilon epsilon;
+    private final static Epsilon epsilon = new Epsilon(1000, 500);
     private boolean movingUp, movingDown, movingRight, movingLeft;
     private int XP;
 
@@ -19,7 +17,6 @@ public final class Epsilon extends Entity {
     }
 
     public static Epsilon getInstance() {
-        if (epsilon == null) epsilon = new Epsilon(1000, 500);
         return epsilon;
     }
 
@@ -30,6 +27,8 @@ public final class Epsilon extends Entity {
             if (movingDown) moveY(EPSILON_SPEED);
             if (movingRight) moveX(EPSILON_SPEED);
             if (movingLeft) moveX(-EPSILON_SPEED);
+            EPSILON_X = x;
+            EPSILON_Y = y;
         });
     }
 
@@ -41,6 +40,11 @@ public final class Epsilon extends Entity {
     @Override
     public double getSpeed() {
         return EPSILON_SPEED;
+    }
+
+    @Override
+    public void stopMove() {
+        moveTimer.stop();
     }
 
     @Override

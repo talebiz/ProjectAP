@@ -1,12 +1,13 @@
-package model.enemies;
+package model.enemies.normal;
 
 import controller.EntityData;
 import model.Epsilon;
 import model.Shot;
+import model.enemies.Enemy;
+import view.panels.GamePanel;
 
 import javax.swing.*;
 import java.awt.geom.Line2D;
-import java.util.ArrayList;
 import java.util.Random;
 
 import static controller.Util.Constant.*;
@@ -27,6 +28,7 @@ public class Necropick extends Enemy {
         HP = NECROPICK_HP;
         canMeleeAttack = false;
         hovering = false;
+        setSpecialMove();
         EntityData.addNecropick(this);
     }
 
@@ -64,6 +66,7 @@ public class Necropick extends Enemy {
 
     @Override
     public void dieProcess() {
+        super.dieProcess();
         moveTimer.stop();
         specialMoveTimer.stop();
         alive = false;
@@ -73,6 +76,9 @@ public class Necropick extends Enemy {
     public void setMoveTimer() {
         moveTimer = new Timer(ENTITY_TIMER_PERIOD, e -> updateVertices());
         moveTimer.start();
+    }
+
+    private void setSpecialMove() {
         specialMoveTimer = new Timer(8000, e -> {
             x = xGoingTo;
             y = yGoingTo;
@@ -100,8 +106,11 @@ public class Necropick extends Enemy {
         double yRandom = c * Math.sqrt(40000 - (xRandom - xEpsilon) * (xRandom - xEpsilon));
         xGoingTo = xRandom;
         yGoingTo = yEpsilon + yRandom;
-        if (xGoingTo < GAME_PANEL_X + getSize() || xGoingTo > GAME_PANEL_X + GAME_PANEL_WIDTH - getSize() ||
-                yGoingTo < GAME_PANEL_Y + getSize() || yGoingTo > GAME_PANEL_Y + GAME_PANEL_WIDTH - getSize()) {
+        GamePanel gamePanel = Epsilon.getInstance().getLocalPanel();
+        if (xGoingTo < gamePanel.getX() + getSize() ||
+                xGoingTo > gamePanel.getX() + gamePanel.getWidth() - getSize() ||
+                yGoingTo < gamePanel.getY() + getSize() ||
+                yGoingTo > gamePanel.getY() + gamePanel.getHeight() - getSize()) {
             setRandomLocation();
         }
     }
@@ -111,7 +120,7 @@ public class Necropick extends Enemy {
             double shotXMove = new Random().nextDouble(-getSpeed(), getSpeed());
             double a = (new Random().nextDouble() > 0.5) ? 1 : -1;
             double shotYMove = a * Math.sqrt(getSpeed() * getSpeed() - shotXMove * shotXMove);
-            new Shot(x, y, shotXMove, shotYMove, 5, Shot.KindOfShot.ENEMY_SHOT, true);
+            new Shot(x, y, shotXMove, shotYMove, 5, Shot.KindOfShot.ENEMY_SHOT, false);
         }
     }
 
@@ -123,6 +132,20 @@ public class Necropick extends Enemy {
     @Override
     public double getSpeed() {
         return NECROPICK_SPEED;
+    }
+
+    @Override
+    public void stopMove() {
+        super.stopMove();
+        moveTimer.stop();
+        specialMoveTimer.stop();
+    }
+
+    @Override
+    public void continueMove() {
+        super.continueMove();
+        moveTimer.start();
+        specialMoveTimer.start();
     }
 
     @Override

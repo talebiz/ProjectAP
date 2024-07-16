@@ -5,6 +5,8 @@ import model.Entity;
 
 import java.awt.geom.Line2D;
 
+import static controller.EnemyBuilder.amount;
+
 public abstract class Enemy extends Entity {
     protected double xMove, yMove;
     protected double[] xVertex;
@@ -27,7 +29,9 @@ public abstract class Enemy extends Entity {
         lines[lastIndex] = new Line2D.Double(xVertex[lastIndex], yVertex[lastIndex], xVertex[0], yVertex[0]);
     }
 
-    public abstract void dieProcess();
+    public void dieProcess() {
+        amount++;
+    }
 
     @Override
     public abstract void setMoveTimer();
@@ -43,20 +47,16 @@ public abstract class Enemy extends Entity {
         setLines();
     }
 
-    public double[] getXVertex() {
-        return xVertex;
-    }
-
     public double getXVertex(int index) {
         return xVertex[index];
     }
 
-    public double[] getYVertex() {
-        return yVertex;
-    }
-
     public double getYVertex(int index) {
         return yVertex[index];
+    }
+
+    public int getVerticesNumber() {
+        return xVertex.length;
     }
 
     public Line2D[] getLines() {
@@ -72,4 +72,8 @@ public abstract class Enemy extends Entity {
     public abstract int getMeleeDamage();
 
     public abstract int getNumberOfCollectible();
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
 }

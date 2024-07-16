@@ -4,55 +4,31 @@ import controller.Collision;
 import controller.EnemyBuilder;
 import controller.EntityData;
 import controller.Update;
-import controller.Util.Direction;
 import model.*;
-import model.enemies.*;
 import view.MyFrame;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 import static controller.Util.Constant.*;
 
-public class FirstPanel extends GamePanel {
-    private static FirstPanel firstPanel;
+public final class FirstPanel extends GamePanel {
+    private static final FirstPanel firstPanel = new FirstPanel();
     private Timer elapsedTime;
     private int minute, second, wave;
     private boolean showWave;
-    private boolean isAthenaEmpower;
 
     private FirstPanel() {
         super();
         rigid = false;
         isometric = false;
-        setFocusable(true);
-        requestFocusInWindow();
+        exertion = false;
         setSize(NORMAL_PANEL_SIZE);
         setLocation(NORMAL_PANEL_LOCATION);
         wave = 1;
         showWave = true;
         setContent();
-    }
-
-    public static FirstPanel getInstance() {
-        if (firstPanel == null) firstPanel = new FirstPanel();
-        return firstPanel;
-    }
-
-    public void makeNew() {
-//        new GamePanel(){{
-//            setLocation(1200,800);
-//            setSize(400,400);
-//            setVisible(true);
-//        }};
         setVisible(true);
-        setKeyListener();
-        setSize(NORMAL_PANEL_SIZE);
-        setLocation(NORMAL_PANEL_LOCATION);
         epsilon.setX(1000);
         epsilon.setY(500);
         wave = 1;
@@ -61,15 +37,14 @@ public class FirstPanel extends GamePanel {
         Update.updatePaint();
     }
 
+    public static FirstPanel getInstance() {
+        return firstPanel;
+    }
+
     @Override
     protected void setContent() {
         super.setContent();
-        //TODO UNCOMMENT THIS
-//        setResizePanelTimer();
-//        setMovePanelTimer();
         setElapsedTime();
-        setKeyListener();
-        setShootListener();
     }
 
     @Override
@@ -108,43 +83,6 @@ public class FirstPanel extends GamePanel {
             repaint();
         });
         elapsedTime.start();
-    }
-
-    private void setShootListener() {
-        this.addMouseListener(new GameMouseListener());
-    }
-
-    private void setDirectionAndShoot(double xClicked, double yClicked) {
-        double xEpsilon = epsilon.getX();
-        double yEpsilon = epsilon.getY();
-        double distance = Math.hypot(xClicked - xEpsilon, yClicked - yEpsilon);
-        double xMove = SHOT_SPEED * (xClicked - xEpsilon) / distance;
-        double yMove = SHOT_SPEED * (yClicked - yEpsilon) / distance;
-        if (isAthenaEmpower) {
-            athenaEmpower(xEpsilon, yEpsilon, xMove, yMove);
-        } else {
-            new Shot(xEpsilon, yEpsilon, xMove, yMove, 5, Shot.KindOfShot.EPSILON_SHOT, true);
-        }
-    }
-
-    private void athenaEmpower(double xEpsilon, double yEpsilon, double xMove, double yMove) {
-        Timer timer = new Timer(50, e ->
-                new Shot(xEpsilon, yEpsilon, xMove, yMove, 5, Shot.KindOfShot.EPSILON_SHOT, true));
-        timer.start();
-        Timer end = new Timer(170, e -> timer.stop());
-        end.setRepeats(false);
-        end.start();
-    }
-
-    private void setShootSound() {
-        try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(SHOOT_SOUND);
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioInputStream);
-            clip.start();
-        } catch (Exception ex) {
-            System.out.println("Error with playing sound.");
-        }
     }
 
     public void nextWave() {
@@ -215,28 +153,23 @@ public class FirstPanel extends GamePanel {
         MainMenuPanel.getInstance().setVisible(true);
     }
 
-    private void pauseGamePanel() {
-//        for (Entity entity : Entity.getEntities()) entity.stopMove();
-//        for (Shot shot : Shot.list()) shot.stopMove();
-//        movePanelTimer.stop();
-//        resizePanelTimer.stop();
-//        elapsedTime.stop();
-//        Collision.stopCheckCollision();
-//        EnemyBuilder.stopBuild();
-//        setLocation(2000, 1500);
-//        StorePanel.getInstance().setVisible(true);
+    public void pauseGamePanel() {
+        for (Entity entity : EntityData.getEntities()) entity.stopMove();
+        for (Shot shot : EntityData.getShots()) shot.stopMove();
+        for(GamePanel gamePanel:GamePanel.getGamePanels()) gamePanel.pause();
+        if (increasePanelTimer != null && increasePanelTimer.isRunning()) increasePanelTimer.stop();
+        elapsedTime.stop();
+        EnemyBuilder.stopBuild();
+        Collision.stopCheckCollision();
     }
 
     public void resumeGamePanel() {
-        for (Entity entity : EntityData.getEntities()) entity.startMove();
-        for (Shot shot : EntityData.getShots()) shot.startMove();
-        movePanelTimer.start();
-        resizePanelTimer.start();
+        for (Entity entity : EntityData.getEntities()) entity.continueMove();
+        for (Shot shot : EntityData.getShots()) shot.continueMove();
+        for(GamePanel gamePanel:GamePanel.getGamePanels()) gamePanel.resume();
         elapsedTime.start();
-        Collision.startCheckCollision();
         EnemyBuilder.continueBuild();
-        setBounds(GAME_PANEL_X, GAME_PANEL_Y, GAME_PANEL_WIDTH, GAME_PANEL_HEIGHT);
-        setKeyListener();
+        Collision.startCheckCollision();
     }
 
     //TODO ACCELERATION IN LISTENER CLASS ANH THIS METHOD
@@ -249,103 +182,7 @@ public class FirstPanel extends GamePanel {
 //        end.start();
 //    }
 
-    public void setKeyListener() {
-        this.requestFocusInWindow();
-        this.addKeyListener(new GameKeyListener());
-    }
-
     public void setShowWave(boolean showWave) {
         this.showWave = showWave;
-    }
-
-    public void setAthenaEmpower(boolean athenaEmpower) {
-        isAthenaEmpower = athenaEmpower;
-    }
-
-    class GameKeyListener implements KeyListener {
-        @Override
-        public void keyTyped(KeyEvent e) {
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-            int keyCode = e.getKeyCode();
-            switch (keyCode) {
-                case KeyEvent.VK_W:
-                    epsilon.setMovingUp(true);
-                    break;
-                case KeyEvent.VK_S:
-                    epsilon.setMovingDown(true);
-                    break;
-                case KeyEvent.VK_D:
-                    epsilon.setMovingRight(true);
-                    break;
-                case KeyEvent.VK_A:
-                    epsilon.setMovingLeft(true);
-                    break;
-                case KeyEvent.VK_P:
-                    pauseGamePanel();
-                    break;
-            }
-            if (!epsilon.isRunning()) {
-                epsilon.startMove();
-//                setEpsilonAcceleration();
-            }
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-            int keyCode = e.getKeyCode();
-            switch (keyCode) {
-                case KeyEvent.VK_W:
-                    epsilon.setMovingUp(false);
-                    break;
-                case KeyEvent.VK_S:
-                    epsilon.setMovingDown(false);
-                    break;
-                case KeyEvent.VK_D:
-                    epsilon.setMovingRight(false);
-                    break;
-                case KeyEvent.VK_A:
-                    epsilon.setMovingLeft(false);
-                    break;
-            }
-            if (!epsilon.isMovingUp() && !epsilon.isMovingDown() && !epsilon.isMovingRight()
-                    && !epsilon.isMovingLeft() && epsilon.isRunning()) {
-                epsilon.stopMove();
-            }
-        }
-    }
-
-    class GameMouseListener implements MouseListener {
-        boolean canShot = true;
-
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            if (canShot) {
-                setDirectionAndShoot(e.getX() + getX(), e.getY() + getY());
-                setShootSound();
-                canShot = false;
-                new Timer(250, a -> canShot = true) {{
-                    setRepeats(false);
-                }}.start();
-            }
-        }
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent e) {
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-        }
     }
 }

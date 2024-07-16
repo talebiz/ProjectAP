@@ -1,7 +1,8 @@
-package model.enemies;
+package model.enemies.normal;
 
 import controller.EntityData;
 import model.Epsilon;
+import model.enemies.Enemy;
 
 import javax.swing.*;
 import java.awt.geom.Line2D;
@@ -38,10 +39,11 @@ public class Archmire extends Enemy {
 
     @Override
     public void dieProcess() {
+        super.dieProcess();
         moveTimer.stop();
         aoeAttackTimer.stop();
         alive = false;
-        new MiniArchmire(x- 40,y);
+        new MiniArchmire(x - 40, y);
         new MiniArchmire(x + 40, y);
     }
 
@@ -70,6 +72,20 @@ public class Archmire extends Enemy {
     @Override
     public double getSpeed() {
         return ARCHMIRE_SPEED;
+    }
+
+    @Override
+    public void stopMove() {
+        super.stopMove();
+        moveTimer.stop();
+        aoeAttackTimer.stop();
+    }
+
+    @Override
+    public void continueMove() {
+        super.continueMove();
+        moveTimer.start();
+        aoeAttackTimer.start();
     }
 
     @Override
@@ -105,6 +121,10 @@ public class Archmire extends Enemy {
         private AoEArea(double x, double y) {
             this.x = x;
             this.y = y;
+            setRemoveArea();
+        }
+
+        private void setRemoveArea() {
             new Timer(5000, e -> aoeAreas.remove(this)) {{
                 setRepeats(false);
             }}.start();

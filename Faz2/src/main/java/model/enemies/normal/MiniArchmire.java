@@ -1,5 +1,6 @@
-package model.enemies;
+package model.enemies.normal;
 
+import static controller.EnemyBuilder.amount;
 import static controller.Util.Constant.*;
 
 public class MiniArchmire extends Archmire{
@@ -10,6 +11,7 @@ public class MiniArchmire extends Archmire{
 
     @Override
     public void dieProcess() {
+        amount++;
         moveTimer.stop();
         aoeDamageTimer.stop();
         alive = false;

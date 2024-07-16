@@ -5,48 +5,33 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b67f54fc-90ec-45cc-a482-60545e76f444" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/controller/Collision.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/controller/EnemyBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/controller/EntityData.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/controller/GameController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/controller/GameManger.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/controller/PanelController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/controller/ShotController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/controller/Update.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/controller/Util/Constant.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/controller/Util/Direction.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/model/Collectible.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/model/Entity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/model/Epsilon.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/model/Shot.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/model/enemies/Archmire.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/model/enemies/Enemy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/model/enemies/MiniArchmire.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/model/enemies/Necropick.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/model/enemies/Omenoct.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/model/enemies/Squarantine.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/model/enemies/Trigorath.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/model/enemies/Wyrm.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/view/MyFrame.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/view/panels/FirstPanel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/view/panels/GamePanel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/view/panels/MainMenuPanel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/view/panels/MyPanel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/view/panels/SettingsPanel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/view/panels/SkillTreePanel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/view/panels/StorePanel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/view/panels/TutorialPanel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/Glug.wav" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/epsilon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/model/enemies/miniBoss/Barricados.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/model/enemies/miniBoss/BlackOrb.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/model/enemies/miniBoss/Orb.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controller/Collision.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/Collision.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controller/EnemyBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/EnemyBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controller/EntityData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/EntityData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controller/PanelController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/PanelController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controller/ShotController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/ShotController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controller/Update.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/Update.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controller/Util/Constant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/Util/Constant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/Entity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Entity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/Epsilon.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Epsilon.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/Shot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Shot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/enemies/Archmire.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/enemies/normal/Archmire.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/enemies/Enemy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/enemies/Enemy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/enemies/MiniArchmire.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/enemies/normal/MiniArchmire.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/enemies/Necropick.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/enemies/normal/Necropick.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/enemies/Omenoct.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/enemies/normal/Omenoct.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/enemies/Squarantine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/enemies/normal/Squarantine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/enemies/Trigorath.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/enemies/normal/Trigorath.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/enemies/Wyrm.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/enemies/normal/Wyrm.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/MyFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/MyFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/panels/FirstPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/panels/FirstPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/panels/GamePanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/panels/GamePanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/panels/MainMenuPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/panels/MainMenuPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/panels/StorePanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/panels/StorePanel.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,6 +75,11 @@
     &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.appearance&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="IntroduceConstantDialog.RECENTS_KEY">
+      <recent name="controller.Util.Constant" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />

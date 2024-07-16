@@ -1,10 +1,6 @@
 package model;
 
-import controller.Collision;
 import controller.EntityData;
-import controller.ShotController;
-import controller.Util.Direction;
-import view.panels.FirstPanel;
 import view.panels.GamePanel;
 
 import javax.swing.*;
@@ -39,7 +35,7 @@ public class Shot {
     private void setMoveTimer() {
         moveTimer = new Timer(ENTITY_TIMER_PERIOD, e -> {
             if (rigid) checkCollisionToWall(this);
-            else checkIfOut(this);
+            checkIfOut(this);
             move();
         });
         moveTimer.start();
@@ -49,7 +45,7 @@ public class Shot {
         moveTimer.stop();
     }
 
-    public void startMove() {
+    public void continueMove() {
         moveTimer.start();
     }
 
@@ -63,14 +59,6 @@ public class Shot {
 
     public double getY() {
         return y;
-    }
-
-    public double getXMove() {
-        return xMove;
-    }
-
-    public double getYMove() {
-        return yMove;
     }
 
     public void move() {

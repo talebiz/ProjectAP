@@ -1,8 +1,9 @@
-package model.enemies;
+package model.enemies.normal;
 
 import controller.EntityData;
 import model.Epsilon;
 import model.Shot;
+import model.enemies.Enemy;
 import view.panels.GamePanel;
 
 import javax.swing.*;
@@ -12,7 +13,7 @@ import java.awt.geom.Line2D;
 import static controller.Util.Constant.*;
 
 public class Wyrm extends Enemy {
-    private final WyrmPanel panel;
+    private WyrmPanel panel;
     private double angle;
     private int direction = 1;
     private final double xCenter = FRAME_SIZE.getWidth() / 2.0;
@@ -28,9 +29,9 @@ public class Wyrm extends Enemy {
         canMeleeAttack = false;
         hovering = false;
         exertion = false;
-        EntityData.addWyrm(this);
         panel = new WyrmPanel();
         setRangedAttackTimer();
+        EntityData.addWyrm(this);
     }
 
     @Override
@@ -40,10 +41,11 @@ public class Wyrm extends Enemy {
 
     @Override
     public void dieProcess() {
+        super.dieProcess();
         alive = false;
-        panel.deletePanel();
         rangedAttackTimer.stop();
         moveTimer.stop();
+        panel.deletePanel();
     }
 
     @Override
@@ -68,8 +70,8 @@ public class Wyrm extends Enemy {
             double xEpsilon = Epsilon.getInstance().getX();
             double yEpsilon = Epsilon.getInstance().getY();
             double distance = Math.hypot(xEpsilon - x, yEpsilon - y);
-            double xMove = OMENOCT_SHOT_SPEED * (xEpsilon - x) / distance;
-            double yMove = OMENOCT_SHOT_SPEED * (yEpsilon - y) / distance;
+            double xMove = WYRM_SHOT_SPEED * (xEpsilon - x) / distance;
+            double yMove = WYRM_SHOT_SPEED * (yEpsilon - y) / distance;
             new Shot(x, y, xMove, yMove, 8, Shot.KindOfShot.ENEMY_SHOT, false);
         });
         rangedAttackTimer.start();
@@ -83,6 +85,22 @@ public class Wyrm extends Enemy {
     @Override
     public double getSpeed() {
         return WYRM_SPEED;
+    }
+
+    @Override
+    public void stopMove() {
+        super.stopMove();
+        moveTimer.stop();
+        rangedAttackTimer.stop();
+        panel.deletePanel();
+    }
+
+    @Override
+    public void continueMove() {
+        super.continueMove();
+        moveTimer.start();
+        rangedAttackTimer.start();
+        panel = new WyrmPanel();
     }
 
     @Override
@@ -107,6 +125,7 @@ public class Wyrm extends Enemy {
             setVisible(true);
             isometric = true;
             rigid = false;
+            exertion = true;
         }
 
         @Override
@@ -114,16 +133,12 @@ public class Wyrm extends Enemy {
             movePanelTimer = new Thread(() -> {
                 while (true) {
                     setSize(new Dimension(
-                            Wyrm.this.getSize() + 50,
-                            (int) (0.8 * Wyrm.this.getSize()) + 50));
+                            Wyrm.this.getSize() + 60,
+                            (int) (0.8 * Wyrm.this.getSize()) + 60));
                     setLocation(new Point(
-                            (int) (x - Wyrm.this.getSize() / 2.0 - 25),
-                            (int) (y - 0.8 * (Wyrm.this.getSize() / 2.0) - 25)));
-                    try {
-                        Thread.sleep(40);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
+                            (int) (x - Wyrm.this.getSize() / 2.0 - 30),
+                            (int) (y - 0.8 * (Wyrm.this.getSize() / 2.0) - 30)));
+                    waiting(40);
                 }
             });
             movePanelTimer.start();

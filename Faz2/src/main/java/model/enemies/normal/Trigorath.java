@@ -1,11 +1,11 @@
-package model.enemies;
+package model.enemies.normal;
 
 import controller.EntityData;
 import model.Epsilon;
+import model.enemies.Enemy;
 
 import javax.swing.*;
 import java.awt.geom.Line2D;
-import java.util.ArrayList;
 
 import static controller.Util.Constant.*;
 
@@ -50,6 +50,7 @@ public class Trigorath extends Enemy {
 
     @Override
     public void dieProcess() {
+        super.dieProcess();
         moveTimer.stop();
         specialMoveTimer.stop();
         alive = false;
@@ -81,6 +82,20 @@ public class Trigorath extends Enemy {
     @Override
     public double getSpeed() {
         return TRIGORATH_SPEED;
+    }
+
+    @Override
+    public void stopMove() {
+        super.stopMove();
+        moveTimer.stop();
+        specialMoveTimer.stop();
+    }
+
+    @Override
+    public void continueMove() {
+        super.continueMove();
+        moveTimer.start();
+        specialMoveTimer.start();
     }
 
     @Override

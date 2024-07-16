@@ -4,6 +4,8 @@ import model.Collectible;
 import model.Entity;
 import model.Shot;
 import model.enemies.*;
+import model.enemies.miniBoss.*;
+import model.enemies.normal.*;
 
 import java.util.ArrayList;
 
@@ -17,6 +19,8 @@ public class EntityData {
     private static final ArrayList<Necropick> necropicks = new ArrayList<>();
     private static final ArrayList<Archmire> archmires = new ArrayList<>();
     private static final ArrayList<Wyrm> wyrms = new ArrayList<>();
+    private static final ArrayList<Barricados> barricadoses = new ArrayList<>();
+    private static final ArrayList<BlackOrb> blackOrbs = new ArrayList<>();
     private static final ArrayList<Collectible> collectibles = new ArrayList<>();
 
     public static void addShot(Shot shot) {
@@ -53,6 +57,14 @@ public class EntityData {
 
     public static void addWyrm(Wyrm wyrm) {
         wyrms.add(wyrm);
+    }
+
+    public static void addBarricados(Barricados barricados) {
+        barricadoses.add(barricados);
+    }
+
+    public static void addBlackOrb(BlackOrb blackOrb) {
+        blackOrbs.add(blackOrb);
     }
 
     public static void addCollectible(Collectible collectible) {
@@ -93,6 +105,14 @@ public class EntityData {
 
     public static ArrayList<Wyrm> getWyrms() {
         return wyrms;
+    }
+
+    public static ArrayList<Barricados> getBarricadoses() {
+        return barricadoses;
+    }
+
+    public static ArrayList<BlackOrb> getBlackOrbs() {
+        return blackOrbs;
     }
 
     public static ArrayList<Collectible> getCollectibles() {

@@ -1,10 +1,12 @@
 package controller;
 
 import model.*;
-import model.enemies.Archmire;
+import model.enemies.miniBoss.BlackOrb;
+import model.enemies.miniBoss.Orb;
+import model.enemies.normal.Archmire;
 import model.enemies.Enemy;
-import model.enemies.Squarantine;
-import model.enemies.Wyrm;
+import model.enemies.normal.Squarantine;
+import model.enemies.normal.Wyrm;
 import view.panels.FirstPanel;
 
 import static controller.Util.Constant.*;
@@ -30,7 +32,8 @@ public class Collision {
             shotAndEnemyCollision();
             rangedShotAndEpsilon();
             epsilonAndCollectibleCollision();
-            aoeAttackCollision();
+            drownAttackCollision();
+            laserAttackCollision();
         });
         checkCollisionTimer.start();
     }
@@ -68,7 +71,7 @@ public class Collision {
             if (enemy.isCanMeleeAttack()) {
                 if (Math.abs(enemy.getX() - xEpsilon) > 100 ||
                         Math.abs(enemy.getY() - yEpsilon) > 100) continue;
-                for (int i = 0; i < enemy.getXVertex().length; i++) {
+                for (int i = 0; i < enemy.getVerticesNumber(); i++) {
                     double distance = Math.hypot(
                             xEpsilon - enemy.getXVertex(i),
                             yEpsilon - enemy.getYVertex(i));
@@ -105,7 +108,7 @@ public class Collision {
                     }
                 } else {
                     for (Line2D line : enemy.getLines()) {
-                        if (distanceOfEpsilonAndLine(
+                        if (distanceOfEntityAndLine(
                                 xEpsilon, yEpsilon,
                                 line.getX1(), line.getY1(),
                                 line.getX2(), line.getY2()) < EPSILON_SIZE / 2.0) {
@@ -132,32 +135,54 @@ public class Collision {
                 if (Math.abs(enemy1.getX() - enemy2.getX()) > 100 ||
                         Math.abs(enemy1.getY() - enemy2.getY()) > 100) continue;
                 if (!enemy1.isHovering() && !enemy2.isHovering()) {
-                    for (Line2D line1 : enemy1.getLines()) {
-                        for (Line2D line2 : enemy2.getLines()) {
-                            if (line1.intersectsLine(line2)) {
+                    if (enemy1.getLines().length == 0 && enemy2.getLines().length == 0) {
+                        double distance = Math.hypot(enemy1.getX() - enemy2.getX(),
+                                enemy1.getY() - enemy2.getX());
+                        if (distance < (enemy1.getSize() + enemy2.getSize()) / 2.0) {
+                            double xCollision = (enemy1.getX() + enemy2.getX()) / 2.0;
+                            double yCollision = (enemy1.getY() + enemy2.getY()) / 2.0;
+                            makeImpact(xCollision, yCollision, null);
+                            return;
+                        }
+                    } else if (enemy1.getLines().length == 0 && enemy2.getLines().length != 0) {
+                        for (Line2D line : enemy2.getLines()) {
+                            if (distanceOfEntityAndLine(
+                                    enemy1.getX(), enemy1.getY(),
+                                    line.getX1(), line.getY1(),
+                                    line.getX2(), line.getY2()) < enemy1.getSize() / 2.0) {
                                 double xCollision = (enemy1.getX() + enemy2.getX()) / 2.0;
                                 double yCollision = (enemy1.getY() + enemy2.getY()) / 2.0;
                                 makeImpact(xCollision, yCollision, null);
                                 return;
                             }
                         }
+                    } else if (enemy1.getLines().length != 0 && enemy2.getLines().length == 0) {
+                        for (Line2D line : enemy2.getLines()) {
+                            if (distanceOfEntityAndLine(
+                                    enemy2.getX(), enemy2.getY(),
+                                    line.getX1(), line.getY1(),
+                                    line.getX2(), line.getY2()) < enemy2.getSize() / 2.0) {
+                                double xCollision = (enemy1.getX() + enemy2.getX()) / 2.0;
+                                double yCollision = (enemy1.getY() + enemy2.getY()) / 2.0;
+                                makeImpact(xCollision, yCollision, null);
+                                return;
+                            }
+                        }
+                    } else {
+                        for (Line2D line1 : enemy1.getLines()) {
+                            for (Line2D line2 : enemy2.getLines()) {
+                                if (line1.intersectsLine(line2)) {
+                                    double xCollision = (enemy1.getX() + enemy2.getX()) / 2.0;
+                                    double yCollision = (enemy1.getY() + enemy2.getY()) / 2.0;
+                                    makeImpact(xCollision, yCollision, null);
+                                    return;
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
-    }
-
-    public static double distanceOfEpsilonAndLine(double x1, double y1, double x2,
-                                                  double y2, double x3, double y3) {
-        double dx = x3 - x2;
-        double dy = y3 - y2;
-        double lenSquared = dx * dx + dy * dy;
-        if (lenSquared == 0) return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
-        double t = ((x1 - x2) * dx + (y1 - y2) * dy) / lenSquared;
-        t = Math.max(0, Math.min(1, t));
-        double closestX = x2 + t * dx;
-        double closestY = y2 + t * dy;
-        return Math.sqrt((x1 - closestX) * (x1 - closestX) + (y1 - closestY) * (y1 - closestY));
     }
 
     private static void shotAndEnemyCollision() {
@@ -174,7 +199,7 @@ public class Collision {
                             makeImpact(shot.getX(), shot.getY(), ENEMY_DAMAGE_SOUND);
                             shot.setAppear(false);
                             shot.stopMove();
-                            if(enemy instanceof Wyrm) ((Wyrm) enemy).changeDirection();
+                            if (enemy instanceof Wyrm) ((Wyrm) enemy).changeDirection();
                             enemy.damage(shot.getDamage());
                             if (enemy.getHP() <= 0) {
                                 makeCollectible(enemy);
@@ -184,7 +209,7 @@ public class Collision {
                         }
                     } else {
                         for (Line2D line : enemy.getLines()) {
-                            if (distanceOfEpsilonAndLine(
+                            if (distanceOfEntityAndLine(
                                     xShot, yShot,
                                     line.getX1(), line.getY1(),
                                     line.getX2(), line.getY2()) < SHOT_SIZE / 2.0) {
@@ -249,7 +274,7 @@ public class Collision {
         }
     }
 
-    private static void aoeAttackCollision() {
+    private static void drownAttackCollision() {
         ArrayList<Archmire> list = EntityData.getArchmires();
         for (Archmire archmire : list) {
             q:
@@ -279,6 +304,38 @@ public class Collision {
                 }
             }
         }
+    }
+
+    private static void laserAttackCollision() {
+        for (BlackOrb blackOrb : EntityData.getBlackOrbs()) {
+            for (Entity entity : EntityData.getEntities()) {
+                if (!(entity instanceof Orb)) {
+                    for (Line2D laser : blackOrb.getLasers()) {
+                        if (distanceOfEntityAndLine(entity.getX(), entity.getY(),
+                                laser.getX1(), laser.getY1(),
+                                laser.getX2(), laser.getY2()) < 2 * entity.getSize() / 3.0) {
+                            entity.setAoeDamage(12);
+                            entity.startAoEDamage();
+                            break;
+                        }
+                        entity.setAoeDamage(0);
+                    }
+                }
+            }
+        }
+    }
+
+    public static double distanceOfEntityAndLine(double x1, double y1, double x2,
+                                                 double y2, double x3, double y3) {
+        double dx = x3 - x2;
+        double dy = y3 - y2;
+        double lenSquared = dx * dx + dy * dy;
+        if (lenSquared == 0) return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+        double t = ((x1 - x2) * dx + (y1 - y2) * dy) / lenSquared;
+        t = Math.max(0, Math.min(1, t));
+        double closestX = x2 + t * dx;
+        double closestY = y2 + t * dy;
+        return Math.sqrt((x1 - closestX) * (x1 - closestX) + (y1 - closestY) * (y1 - closestY));
     }
 
     private static void playCollisionSound(File sound) {

@@ -1,8 +1,10 @@
-package model.enemies;
+package model.enemies.normal;
 
 import controller.EntityData;
 import model.Epsilon;
 import model.Shot;
+import model.enemies.Enemy;
+import view.panels.GamePanel;
 
 import javax.swing.*;
 import java.awt.geom.Line2D;
@@ -48,6 +50,7 @@ public class Omenoct extends Enemy {
 
     @Override
     public void dieProcess() {
+        super.dieProcess();
         moveTimer.stop();
         rangedAttackTimer.stop();
         alive = false;
@@ -66,17 +69,28 @@ public class Omenoct extends Enemy {
     }
 
     private void rangedAttackMaking() {
-        if (Math.abs(x - GAME_PANEL_X - getSize() / 2.0) < 20 && !rangedAttackTimer.isRunning())
-            rangedAttackTimer.start();
-        else if (Math.abs(x - GAME_PANEL_X - getSize() / 2.0) > 20 && rangedAttackTimer.isRunning())
-            rangedAttackTimer.stop();
+        GamePanel gamePanel = Epsilon.getInstance().getLocalPanel();
+        try {
+            if (Math.abs(x - gamePanel.getX() - getSize() / 2.0) < 20 && !rangedAttackTimer.isRunning())
+                rangedAttackTimer.start();
+            else if (Math.abs(x - gamePanel.getX() - getSize() / 2.0) > 20 && rangedAttackTimer.isRunning())
+                rangedAttackTimer.stop();
+        } catch (Exception e) {
+            System.out.println("game panel is null");
+        }
     }
 
     private void setDirectionOfEnemyMove() {
-        double yEpsilon = Epsilon.getInstance().getY();
-        double distance = Math.hypot(GAME_PANEL_X + getSize() / 2.0 - x, yEpsilon - y);
-        xMove = (Math.abs(x - GAME_PANEL_X - getSize() / 2.0) < 10) ? 0 : getSpeed() * (GAME_PANEL_X + getSize() / 2.0 - x) / distance;
-        yMove = getSpeed() * (yEpsilon - y) / distance;
+        GamePanel gamePanel = Epsilon.getInstance().getLocalPanel();
+        try {
+            double yEpsilon = Epsilon.getInstance().getY();
+            double distance = Math.hypot(gamePanel.getX() + getSize() / 2.0 - x, yEpsilon - y);
+            xMove = (Math.abs(x - gamePanel.getX() - getSize() / 2.0) < 10)
+                    ? 0 : getSpeed() * (gamePanel.getX() + getSize() / 2.0 - x) / distance;
+            yMove = getSpeed() * (yEpsilon - y) / distance;
+        } catch (Exception e) {
+            System.out.println("game panel is null");
+        }
     }
 
     private void setRangedAttackTimer() {
@@ -86,7 +100,7 @@ public class Omenoct extends Enemy {
             double distance = Math.hypot(xEpsilon - x, yEpsilon - y);
             double xMove = OMENOCT_SHOT_SPEED * (xEpsilon - x) / distance;
             double yMove = OMENOCT_SHOT_SPEED * (yEpsilon - y) / distance;
-            new Shot(x, y, xMove, yMove, 4, Shot.KindOfShot.ENEMY_SHOT, false);
+            new Shot(x, y, xMove, yMove, OMENOCT_SHOT_DAMAGE, Shot.KindOfShot.ENEMY_SHOT, false);
         });
     }
 
@@ -103,6 +117,20 @@ public class Omenoct extends Enemy {
     @Override
     public double getSpeed() {
         return OMENOCT_SPEED;
+    }
+
+    @Override
+    public void stopMove() {
+        super.stopMove();
+        moveTimer.stop();
+        rangedAttackTimer.stop();
+    }
+
+    @Override
+    public void continueMove() {
+        super.continueMove();
+        moveTimer.start();
+        rangedAttackTimer.start();
     }
 
     @Override

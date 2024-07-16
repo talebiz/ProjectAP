@@ -44,7 +44,7 @@ public final class MainMenuPanel extends MyPanel {
         startButton.setFont(new Font("", Font.BOLD, 20));
         startButton.addActionListener(e -> {
             this.setVisible(false);
-            FirstPanel.getInstance().makeNew();
+            FirstPanel.getInstance();
         });
         add(startButton);
     }

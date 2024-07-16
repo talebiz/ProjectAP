@@ -35,7 +35,7 @@ public abstract class Entity {
     }
 
     public void startAoEDamage() {
-        aoeDamageTimer.start();
+        if (!aoeDamageTimer.isRunning()) aoeDamageTimer.start();
     }
 
     public abstract void setMoveTimer();
@@ -67,7 +67,9 @@ public abstract class Entity {
     }
 
     public void stopMove() {
-        moveTimer.stop();
+    }
+
+    public void continueMove() {
     }
 
     public void damage(int damage) {
@@ -88,10 +90,6 @@ public abstract class Entity {
 
     public boolean isHovering() {
         return hovering;
-    }
-
-    public void setHovering(boolean hovering) {
-        this.hovering = hovering;
     }
 
     public boolean isExertion() {

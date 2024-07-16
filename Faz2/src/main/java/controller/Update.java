@@ -2,27 +2,29 @@ package controller;
 
 import view.MyFrame;
 import view.panels.GamePanel;
+import view.panels.StorePanel;
 
-import javax.swing.*;
+import static controller.EnemyBuilder.amount;
 
 public abstract class Update {
     public static void updatePaint() {
-//        new Thread(() -> {
-//            while (true) {
-//                GamePanel.getInstance().repaint();
-//                try {
-//                    Thread.sleep(20);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//        }).start();
-        new Timer(20, e -> {
-            for (GamePanel panel : GamePanel.getGamePanels()) panel.repaint();
-            PanelController.setAllLocalPanel();
-            PanelController.keepEpsilonInPanel();
-            MyFrame.getInstance().repaint();
-
+        new Thread(() -> {
+            while (true) {
+                PanelController.setAllLocalPanel();
+                PanelController.keepEpsilonInPanel();
+                for (GamePanel panel : GamePanel.getGamePanels()) panel.repaint();
+                StorePanel.getInstance().repaint();
+                MyFrame.getInstance().repaint();
+                waiting();
+            }
         }).start();
+    }
+
+    private static void waiting() {
+        try {
+            Thread.sleep(20);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

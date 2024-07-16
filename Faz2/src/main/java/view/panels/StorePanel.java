@@ -9,21 +9,18 @@ import java.awt.*;
 import static controller.Util.Constant.*;
 
 public final class StorePanel extends MyPanel {
-    private static StorePanel storePanel;
+    private final static StorePanel storePanel = new StorePanel();
     private JButton hephaestusBanish, athenaEmpower, apolloHeal, back;
     private JLabel XP;
 
     private StorePanel() {
         super();
-        this.setFocusable(true);
-        this.requestFocusInWindow();
         this.setSize(STORE_PANEL_SIZE);
         this.setLocation(STORE_PANEL_LOCATION);
         this.setContent();
     }
 
     public static StorePanel getInstance() {
-        if (storePanel == null) storePanel = new StorePanel();
         return storePanel;
     }
 
