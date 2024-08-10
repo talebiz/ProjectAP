@@ -65,4 +65,12 @@ public class BlackOrb {
     public ArrayList<Orb> getOrbs() {
         return orbs;
     }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
 }

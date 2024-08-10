@@ -1,11 +1,15 @@
 package view.panels.gamePanels;
 
-import connection.ClientManager;
+import connection.controller.ClientManager;
+import connection.controller.MonomachiaBattle;
 import controller.Collision;
 import controller.EnemyBuilder;
 import controller.EntityData;
 import controller.GameManager;
-import model.*;
+import model.Entity;
+import model.Epsilon;
+import model.Shot;
+import model.enemies.Enemy;
 import view.MyFrame;
 import view.panels.menuPanels.MainMenuPanel;
 
@@ -77,7 +81,8 @@ public final class FirstPanel extends GamePanel {
 
     public void nextWave() {
         wave++;
-        if (wave > 3) {
+        if (wave > 8) {
+            closeGame();
             win();
             return;
         }
@@ -86,6 +91,7 @@ public final class FirstPanel extends GamePanel {
     }
 
     private void win() {
+        //TODO WINNING SHOW IN PHASE 1
 //        resizePanelTimer.stop();
 //        movePanelTimer.stop();
 //        java.util.Timer timer = new java.util.Timer();
@@ -117,6 +123,10 @@ public final class FirstPanel extends GamePanel {
 //                        GAME_PANEL_HEIGHT);
 //            }
 //        }, 6000, 20);
+        JOptionPane.showMessageDialog(MyFrame.getInstance(),
+                "you won",
+                "winning",
+                JOptionPane.PLAIN_MESSAGE);
     }
 
     public synchronized void openGame() {
@@ -129,9 +139,11 @@ public final class FirstPanel extends GamePanel {
         epsilon.setY(500);
         setVisible(true);
         MyFrame.getInstance().add(this);
+        new MonomachiaBattle();
     }
 
     public synchronized void closeGame() {
+        for (Enemy entity : EntityData.getEnemies()) entity.dieProcess();
         EntityData.getEntities().clear();
         EntityData.getEnemies().clear();
         EntityData.getShots().clear();
@@ -161,7 +173,7 @@ public final class FirstPanel extends GamePanel {
     public void pauseGamePanel() {
         for (Entity entity : EntityData.getEntities()) entity.stopMove();
         for (Shot shot : EntityData.getShots()) shot.stopMove();
-        for(GamePanel gamePanel:GamePanel.getGamePanels()) gamePanel.pause();
+        for (GamePanel gamePanel : GamePanel.getGamePanels()) gamePanel.pause();
         if (increasePanelTimer != null && increasePanelTimer.isRunning()) increasePanelTimer.stop();
         elapsedTime.stop();
         EnemyBuilder.stopBuild();
@@ -171,7 +183,7 @@ public final class FirstPanel extends GamePanel {
     public void resumeGamePanel() {
         for (Entity entity : EntityData.getEntities()) entity.continueMove();
         for (Shot shot : EntityData.getShots()) shot.continueMove();
-        for(GamePanel gamePanel:GamePanel.getGamePanels()) gamePanel.resume();
+        for (GamePanel gamePanel : GamePanel.getGamePanels()) gamePanel.resume();
         elapsedTime.start();
         EnemyBuilder.continueBuild();
         Collision.startCheckCollision();

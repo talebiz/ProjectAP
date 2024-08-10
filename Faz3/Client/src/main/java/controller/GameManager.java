@@ -10,8 +10,7 @@ public class GameManager {
     private int totalXP;
 
     private GameManager() {
-        //TODO UNCOMMENT THIS
-//        minimizeAllTabs();
+        minimizeAllTabs();
         MainMenuPanel.getInstance().setVisible(true);
     }
 
@@ -49,5 +48,9 @@ public class GameManager {
 
     public int getTotalXP() {
         return totalXP;
+    }
+
+    public void setTotalXP(int totalXP) {
+        this.totalXP = totalXP;
     }
 }

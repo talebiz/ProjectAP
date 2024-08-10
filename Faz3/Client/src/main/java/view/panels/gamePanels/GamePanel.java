@@ -1,10 +1,12 @@
 package view.panels.gamePanels;
 
+import connection.view.PaintServer;
 import controller.EntityData;
 import controller.PanelController;
 import controller.Util.Direction;
 import model.Collectible;
 import model.Epsilon;
+import model.KindOfShot;
 import model.Shot;
 import model.enemies.miniBoss.Barricados;
 import model.enemies.miniBoss.BlackOrb;
@@ -276,13 +278,13 @@ public abstract class GamePanel extends MyPanel {
         if (isAthenaEmpower) {
             athenaEmpower(xEpsilon, yEpsilon, xMove, yMove);
         } else {
-            new Shot(xEpsilon, yEpsilon, xMove, yMove, 5, Shot.KindOfShot.EPSILON_SHOT, true);
+            new Shot(xEpsilon, yEpsilon, xMove, yMove, 5, KindOfShot.EPSILON_SHOT, true);
         }
     }
 
     private void athenaEmpower(double xEpsilon, double yEpsilon, double xMove, double yMove) {
         Timer timer = new Timer(50, e ->
-                new Shot(xEpsilon, yEpsilon, xMove, yMove, 5, Shot.KindOfShot.EPSILON_SHOT, true));
+                new Shot(xEpsilon, yEpsilon, xMove, yMove, 5, KindOfShot.EPSILON_SHOT, true));
         timer.start();
         Timer end = new Timer(170, e -> timer.stop());
         end.setRepeats(false);
@@ -305,6 +307,7 @@ public abstract class GamePanel extends MyPanel {
         drawBlackOrb(g2D);
         drawCollectible(g2D);
         drawEpsilon(g2D);
+        PaintServer.paintFromServer(g2D, getX(), getY());
     }
 
     private void drawEpsilon(Graphics2D g2D) {

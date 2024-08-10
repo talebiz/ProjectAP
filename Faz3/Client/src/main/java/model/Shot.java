@@ -82,12 +82,12 @@ public class Shot {
         return damage;
     }
 
-    public enum KindOfShot {
-        EPSILON_SHOT, ENEMY_SHOT
-    }
-
     public KindOfShot getKind() {
         return kind;
+    }
+
+    public String getKind2() {
+        return kind.toString();
     }
 
     public Image getImage() {

@@ -2,7 +2,6 @@ package model.enemies.normal;
 
 import controller.EntityData;
 import model.Epsilon;
-import model.enemies.Enemy;
 
 import javax.swing.*;
 import java.awt.geom.Line2D;
@@ -10,7 +9,7 @@ import java.util.ArrayList;
 
 import static controller.Util.Constant.*;
 
-public class Archmire extends Enemy {
+public class Archmire extends AdvanceEnemy {
     private final ArrayList<AoEArea> aoeAreas = new ArrayList<>();
     private Timer aoeAttackTimer;
 

@@ -1,7 +1,7 @@
 package view.panels.menuPanels;
 
-import connection.ClientManager;
-import connection.User;
+import connection.controller.ClientManager;
+import connection.model.User;
 import controller.Collision;
 import controller.EnemyBuilder;
 import controller.GameManager;
@@ -9,6 +9,8 @@ import controller.Update;
 import view.MyFrame;
 import view.panels.MyPanel;
 import view.panels.gamePanels.FirstPanel;
+import view.panels.menuPanels.squadPanels.SquadOutPanel;
+import view.panels.menuPanels.squadPanels.SquadInPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -121,7 +123,7 @@ public final class MainMenuPanel extends MyPanel {
     }
 
     private void setSquadModeButton() {
-        JButton squadMode = new JButton("Squad Mode");
+        JButton squadMode = new JButton("Multiplayer");
         squadMode.setBounds(250, 620, 500, 70);
         squadMode.setFont(new Font("", Font.BOLD, 20));
         squadMode.addActionListener(e -> {
@@ -130,8 +132,12 @@ public final class MainMenuPanel extends MyPanel {
                 MyFrame.getInstance().remove(this);
                 MyFrame.getInstance().revalidate();
                 if (User.getInstance().getSquadName().isEmpty()) {
-                MyFrame.getInstance().add(SquadPanel1.getInstance());
-                SquadPanel1.getInstance().setVisible(true);
+                MyFrame.getInstance().add(SquadOutPanel.getInstance());
+                SquadOutPanel.getInstance().setVisible(true);
+                } else {
+                    ClientManager.getInstance().sendMessage("show user list");
+                    MyFrame.getInstance().add(SquadInPanel.getInstance());
+                    SquadInPanel.getInstance().setVisible(true);
                 }
             } else {
                 JOptionPane.showMessageDialog(MyFrame.getInstance(),

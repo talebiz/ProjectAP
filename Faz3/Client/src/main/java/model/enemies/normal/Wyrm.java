@@ -3,7 +3,7 @@ package model.enemies.normal;
 import controller.EntityData;
 import model.Epsilon;
 import model.Shot;
-import model.enemies.Enemy;
+import model.KindOfShot;
 import view.panels.gamePanels.GamePanel;
 
 import javax.swing.*;
@@ -12,7 +12,7 @@ import java.awt.geom.Line2D;
 
 import static controller.Util.Constant.*;
 
-public class Wyrm extends Enemy {
+public class Wyrm extends AdvanceEnemy {
     private WyrmPanel panel;
     private double angle;
     private int direction = 1;
@@ -72,7 +72,7 @@ public class Wyrm extends Enemy {
             double distance = Math.hypot(xEpsilon - x, yEpsilon - y);
             double xMove = WYRM_SHOT_SPEED * (xEpsilon - x) / distance;
             double yMove = WYRM_SHOT_SPEED * (yEpsilon - y) / distance;
-            new Shot(x, y, xMove, yMove, 8, Shot.KindOfShot.ENEMY_SHOT, false);
+            new Shot(x, y, xMove, yMove, 8, KindOfShot.ENEMY_SHOT, false);
         });
         rangedAttackTimer.start();
     }

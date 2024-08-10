@@ -2,8 +2,6 @@ package model;
 
 import javax.swing.*;
 
-import java.io.Serializable;
-
 import static controller.Util.Constant.*;
 
 public final class Epsilon extends Entity {
@@ -11,7 +9,7 @@ public final class Epsilon extends Entity {
     private boolean movingUp, movingDown, movingRight, movingLeft;
     private int XP;
 
-    private Epsilon(int x, int y) {
+    public Epsilon(int x, int y) {
         super(x, y);
         HP = EPSILON_HP;
         XP = 0;

@@ -1,46 +1,28 @@
 package database;
 
-import model.User;
+import model.conection.User;
 
 import java.util.ArrayList;
 
 public class Users {
     private static final ArrayList<User> users = new ArrayList<>();
 
-//    static {
-//        new Thread(() -> {
-//            while (true) {
-//                try {
-//                    Thread.sleep(1000);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//                System.out.println(users.size());
-//                if (users.size() == 1) {
-//                    System.out.println(users.getFirst().getUsername());
-//                    System.out.println(users.getFirst().getXP());
-//                    System.out.println(users.getFirst().getSquad());
-//                    if (users.getFirst().getSquad() != null)
-//                        System.out.println(users.getFirst().getSquad().getName());
-//                }
-//            }
-//        }).start();
-//    }
-
-    public static void addUser(User user) {
-        for (User value : users) {
-            if (value.getMacAddress().equals(user.getMacAddress())) return;
+    public static User addUser(User user) {
+        for (User user0 : users) {
+            //TODO CHANGE ALL NAME COMPARISON TO MAC ADDRESS
+            if (user0.getUsername().equals(user.getUsername())) return user0;
         }
         users.add(user);
+        return user;
     }
 
     public static User getUser(int index) {
         return users.get(index);
     }
 
-    public static User getUser(String macAddress) {
+    public static User getUser(String username) {
         for (User user : users) {
-            if (user.getMacAddress().equals(macAddress)) {
+            if (user.getUsername().equals(username)) {
                 return user;
             }
         }

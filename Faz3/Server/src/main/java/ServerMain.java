@@ -2,22 +2,16 @@ import conection.ServerManager;
 
 public class ServerMain {
     public static void main(String[] args) {
+        //TODO SHOW PROBLEM WITH MULTIPLAYER
+//        new Thread(() -> {
         new ServerManager();
-
+//        }).start();
+//        try {
+//            Thread.sleep(15000);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
+//        new MonomachiaBattle(ServerManager.getClientHandler("ali").getUser(),
+//                ServerManager.getClientHandler("parsa").getUser());
     }
 }
-
-//try {
-//InetAddress ip = InetAddress.getLocalHost();
-//NetworkInterface network = NetworkInterface.getByInetAddress(ip);
-//byte[] mac = network.getHardwareAddress();
-//
-//StringBuilder sb = new StringBuilder();
-//            for (int i = 0; i < mac.length; i++) {
-//        sb.append(String.format("%02X%s", mac[i],""));
-//        }
-//        System.out.println("MAC address: " + sb);
-//
-//        } catch (UnknownHostException | SocketException e) {
-//        e.printStackTrace();
-//        }

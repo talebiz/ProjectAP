@@ -3,8 +3,8 @@ package conection;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import database.Squads;
 import database.Users;
-import model.Squad;
-import model.User;
+import model.conection.Squad;
+import model.conection.User;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,17 +14,17 @@ import java.util.ArrayList;
 
 public class ServerManager {
     private final ServerSocket serverSocket;
-    private final ArrayList<ClientHandler> clientHandlers = new ArrayList<>();
+    private final static ArrayList<ClientHandler> clientHandlers = new ArrayList<>();
 
     public ServerManager() {
-//        readUsers();
+        readUsers();
         readSquads();
         try {
             serverSocket = new ServerSocket(9000);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-//        setShutdownHook();
+        setShutdownHook();
         waitForClient();
     }
 
@@ -64,6 +64,11 @@ public class ServerManager {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             writeUsers();
             writeSquads();
+            try {
+                serverSocket.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }));
     }
 
@@ -92,12 +97,14 @@ public class ServerManager {
     }
 
     private void waitForClient() {
+        //noinspection InfiniteLoopStatement
         while (true) {
             try {
                 Socket socket = serverSocket.accept();
                 ClientHandler clientHandler = new ClientHandler(socket);
                 clientHandlers.add(clientHandler);
                 clientHandler.start();
+                //noinspection BusyWait
                 Thread.sleep(300);
                 deleteAdditionalClientHandler();
                 System.out.println(clientHandlers.size() + "th client connected");
@@ -113,5 +120,14 @@ public class ServerManager {
                 clientHandlers.get(i).interrupt();
                 clientHandlers.remove(i--);
             }
+    }
+
+    public static ClientHandler getClientHandler(String username) {
+        for (ClientHandler clientHandler : clientHandlers) {
+            if (clientHandler.getUser().getUsername().equals(username)) {
+                return clientHandler;
+            }
+        }
+        return null;
     }
 }

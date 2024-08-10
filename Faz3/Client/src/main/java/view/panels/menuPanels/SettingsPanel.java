@@ -12,9 +12,8 @@ import static controller.Util.Constant.NORMAL_PANEL_SIZE;
 
 public final class SettingsPanel extends MyPanel {
     private static SettingsPanel settingsPanel;
-    private JSlider levelSlider, soundSlider, sensitivitySlider;
-    private JLabel levelLabel, soundLabel, sensitivityLabel;
-    private JButton backButton;
+    private JSlider levelSlider;
+    private JSlider sensitivitySlider;
 
     private SettingsPanel() {
         super();
@@ -37,7 +36,7 @@ public final class SettingsPanel extends MyPanel {
     }
 
     private void setLevel() {
-        levelLabel = new JLabel();
+        JLabel levelLabel = new JLabel();
         levelLabel.setBounds(200, 120, 300, 150);
         levelLabel.setForeground(Color.WHITE);
         levelLabel.setFont(new Font("", Font.BOLD, 25));
@@ -49,20 +48,20 @@ public final class SettingsPanel extends MyPanel {
     }
 
     private void setSound() {
-        soundLabel = new JLabel();
+        JLabel soundLabel = new JLabel();
         soundLabel.setBounds(200, 320, 300, 150);
         soundLabel.setForeground(Color.WHITE);
         soundLabel.setFont(new Font("", Font.BOLD, 25));
         soundLabel.setText("Sound");
         this.add(soundLabel);
-        soundSlider = new JSlider(0, 100, 50);
+        JSlider soundSlider = new JSlider(0, 100, 50);
         soundSlider.setBackground(Color.WHITE);
         soundSlider.setBounds(350, 390, 400, 20);
         this.add(soundSlider);
     }
 
     private void setSensitivity() {
-        sensitivityLabel = new JLabel();
+        JLabel sensitivityLabel = new JLabel();
         sensitivityLabel.setBounds(200, 520, 300, 150);
         sensitivityLabel.setForeground(Color.WHITE);
         sensitivityLabel.setFont(new Font("", Font.BOLD, 25));
@@ -74,7 +73,7 @@ public final class SettingsPanel extends MyPanel {
     }
 
     private void setBackButton() {
-        backButton = new JButton("back");
+        JButton backButton = new JButton("back");
         backButton.setBounds(40, 40, 80, 50);
         backButton.setFont(new Font("", Font.BOLD, 20));
         backButton.addActionListener(e -> {

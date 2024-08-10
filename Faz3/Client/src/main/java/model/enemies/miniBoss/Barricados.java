@@ -1,7 +1,6 @@
 package model.enemies.miniBoss;
 
 import controller.EntityData;
-import model.enemies.Enemy;
 import view.panels.gamePanels.GamePanel;
 
 import javax.swing.*;
@@ -11,7 +10,7 @@ import java.util.Random;
 
 import static controller.Util.Constant.*;
 
-public class Barricados extends Enemy {
+public class Barricados extends MiniBossEnemy {
     private BarricadosPanel panel;
 
     public Barricados(double x, double y) {

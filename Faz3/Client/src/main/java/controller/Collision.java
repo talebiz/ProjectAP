@@ -2,8 +2,8 @@ package controller;
 
 import model.*;
 import model.enemies.miniBoss.*;
-import model.enemies.Enemy;
 import model.enemies.normal.*;
+import model.enemies.Enemy;
 import view.panels.gamePanels.FirstPanel;
 
 import static controller.Util.Constant.*;
@@ -183,7 +183,7 @@ public class Collision {
 
     private static void shotAndEnemyCollision() {
         for (Shot shot : EntityData.getShots()) {
-            if (shot.getKind() == Shot.KindOfShot.EPSILON_SHOT) {
+            if (shot.getKind() == KindOfShot.EPSILON_SHOT) {
                 double xShot = shot.getX();
                 double yShot = shot.getY();
                 for (Enemy enemy : EntityData.getEnemies()) {
@@ -230,7 +230,7 @@ public class Collision {
         double xEpsilon = epsilon.getX();
         double yEpsilon = epsilon.getY();
         for (Shot shot : EntityData.getShots()) {
-            if (shot.getKind() == Shot.KindOfShot.ENEMY_SHOT) {
+            if (shot.getKind() == KindOfShot.ENEMY_SHOT) {
                 double xShot = shot.getX();
                 double yShot = shot.getY();
                 double distance = Math.hypot(xEpsilon - xShot, yEpsilon - yShot);

@@ -2,15 +2,13 @@ package model.enemies.normal;
 
 import controller.EntityData;
 import model.Epsilon;
-import model.enemies.Enemy;
 
 import javax.swing.*;
 import java.awt.geom.Line2D;
-import java.io.Serializable;
 
 import static controller.Util.Constant.*;
 
-public class Squarantine extends Enemy implements Serializable {
+public class Squarantine extends BasicEnemy {
     private boolean dashing;
     private Timer specialMoveTimer;
 

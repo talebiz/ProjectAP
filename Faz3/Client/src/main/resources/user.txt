@@ -1,5 +1,1 @@
-true
-macAddress: 3C22FBDF99F8
-username: parsa
-XP: 9500
-squad: 
+false

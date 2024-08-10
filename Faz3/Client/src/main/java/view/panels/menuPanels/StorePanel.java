@@ -12,8 +12,6 @@ import static controller.Util.Constant.*;
 
 public final class StorePanel extends MyPanel {
     private final static StorePanel storePanel = new StorePanel();
-    private JButton hephaestusBanish, athenaEmpower, apolloHeal, back;
-    private JLabel XP;
 
     private StorePanel() {
         super();
@@ -36,7 +34,7 @@ public final class StorePanel extends MyPanel {
     }
 
     private void setXpLabel() {
-        XP = new JLabel();
+        JLabel XP = new JLabel();
         XP.setForeground(Color.WHITE);
         XP.setFont(new Font("", Font.BOLD, 25));
         XP.setText("☘︎ : " + Epsilon.getInstance().getXP());
@@ -45,7 +43,7 @@ public final class StorePanel extends MyPanel {
     }
 
     private void setApolloHealButton() {
-        apolloHeal = new JButton("Apollo Heal");
+        JButton apolloHeal = new JButton("Apollo Heal");
         apolloHeal.setBounds(50, 300, 200, 50);
         apolloHeal.setFont(new Font("", Font.BOLD, 15));
         apolloHeal.addActionListener(e -> {
@@ -60,7 +58,7 @@ public final class StorePanel extends MyPanel {
     }
 
     private void setAthenaEmpowerButton() {
-        athenaEmpower = new JButton("Athena Empower");
+        JButton athenaEmpower = new JButton("Athena Empower");
         athenaEmpower.setBounds(300, 300, 200, 50);
         athenaEmpower.setFont(new Font("", Font.BOLD, 15));
         athenaEmpower.addActionListener(e -> {
@@ -78,7 +76,7 @@ public final class StorePanel extends MyPanel {
     }
 
     private void setHephaestusBanishButton() {
-        hephaestusBanish = new JButton("Hephaestus Banish");
+        JButton hephaestusBanish = new JButton("Hephaestus Banish");
         hephaestusBanish.setBounds(550, 300, 200, 50);
         hephaestusBanish.setFont(new Font("", Font.BOLD, 15));
         hephaestusBanish.addActionListener(e -> {
@@ -105,16 +103,11 @@ public final class StorePanel extends MyPanel {
     }
 
     private void setBackButton() {
-        back = new JButton("back");
+        JButton back = new JButton("back");
         back.setBounds(40, 40, 80, 50);
         back.setFont(new Font("", Font.BOLD, 20));
         back.addActionListener(e -> {
             setVisible(false);
-
-//            setVisible(false);
-//            MyFrame.getInstance().remove(this);
-//            MyFrame.getInstance().revalidate();
-//            MainMenuPanel.getInstance().setVisible(true);
             FirstPanel.getInstance().resumeGamePanel();
         });
         add(back);

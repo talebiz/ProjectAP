@@ -67,7 +67,7 @@ public class EnemyBuilder {
     private static void makeEnemyWave(int wave) {
         switch (wave) {
             case 1 -> {
-                if (amount >= 3) {
+                if (amount >= 6) {
                     timer.stop();
                     nextWave.start();
                 }

@@ -2,14 +2,13 @@ package model.enemies.normal;
 
 import controller.EntityData;
 import model.Epsilon;
-import model.enemies.Enemy;
 
 import javax.swing.*;
 import java.awt.geom.Line2D;
 
 import static controller.Util.Constant.*;
 
-public class Trigorath extends Enemy {
+public class Trigorath extends BasicEnemy {
     private Timer specialMoveTimer;
 
     public Trigorath(double x, double y) {

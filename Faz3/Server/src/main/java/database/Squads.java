@@ -1,6 +1,6 @@
 package database;
 
-import model.Squad;
+import model.conection.Squad;
 
 import java.util.ArrayList;
 
@@ -12,6 +12,10 @@ public class Squads {
             if (value.getName().equals(squad.getName())) return;
         }
         squads.add(squad);
+    }
+
+    public static void remove(Squad squad) {
+        squads.remove(squad);
     }
 
     public static Squad getSquad(int index) {

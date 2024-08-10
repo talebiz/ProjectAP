@@ -3,7 +3,7 @@ package model.enemies.normal;
 import controller.EntityData;
 import model.Epsilon;
 import model.Shot;
-import model.enemies.Enemy;
+import model.KindOfShot;
 import view.panels.gamePanels.GamePanel;
 
 import javax.swing.*;
@@ -11,7 +11,7 @@ import java.awt.geom.Line2D;
 
 import static controller.Util.Constant.*;
 
-public class Omenoct extends Enemy {
+public class Omenoct extends IntermediateEnemy {
     private Timer rangedAttackTimer;
 
     public Omenoct(double x, double y) {
@@ -100,7 +100,7 @@ public class Omenoct extends Enemy {
             double distance = Math.hypot(xEpsilon - x, yEpsilon - y);
             double xMove = OMENOCT_SHOT_SPEED * (xEpsilon - x) / distance;
             double yMove = OMENOCT_SHOT_SPEED * (yEpsilon - y) / distance;
-            new Shot(x, y, xMove, yMove, OMENOCT_SHOT_DAMAGE, Shot.KindOfShot.ENEMY_SHOT, false);
+            new Shot(x, y, xMove, yMove, OMENOCT_SHOT_DAMAGE, KindOfShot.ENEMY_SHOT, false);
         });
     }
 

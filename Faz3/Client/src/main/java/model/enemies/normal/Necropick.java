@@ -2,8 +2,8 @@ package model.enemies.normal;
 
 import controller.EntityData;
 import model.Epsilon;
+import model.KindOfShot;
 import model.Shot;
-import model.enemies.Enemy;
 import view.panels.gamePanels.GamePanel;
 
 import javax.swing.*;
@@ -12,7 +12,7 @@ import java.util.Random;
 
 import static controller.Util.Constant.*;
 
-public class Necropick extends Enemy {
+public class Necropick extends IntermediateEnemy {
     private Timer specialMoveTimer;
     private double xGoingTo, yGoingTo;
 
@@ -120,7 +120,7 @@ public class Necropick extends Enemy {
             double shotXMove = new Random().nextDouble(-getSpeed(), getSpeed());
             double a = (new Random().nextDouble() > 0.5) ? 1 : -1;
             double shotYMove = a * Math.sqrt(getSpeed() * getSpeed() - shotXMove * shotXMove);
-            new Shot(x, y, shotXMove, shotYMove, 5, Shot.KindOfShot.ENEMY_SHOT, false);
+            new Shot(x, y, shotXMove, shotYMove, 5, KindOfShot.ENEMY_SHOT, false);
         }
     }
 

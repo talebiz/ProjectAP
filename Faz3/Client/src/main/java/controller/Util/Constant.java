@@ -17,7 +17,7 @@ public class Constant {
             resourcesPath + "epsilon.png").getImage();
     public static int EPSILON_SIZE = 45;
     public static double EPSILON_SPEED = 0.5 * ENTITY_TIMER_PERIOD;
-    public static int EPSILON_HP = 2;
+    public static int EPSILON_HP = 100;
     public static double EPSILON_X;
     public static double EPSILON_Y;
 
@@ -127,10 +127,6 @@ public class Constant {
             (int) (FRAME_SIZE.getHeight() / 2 - 400));
 
     //Game Panel
-    public static int GAME_PANEL_WIDTH = 1000;
-    public static int GAME_PANEL_HEIGHT = 800;
-    public static int GAME_PANEL_X = 400;
-    public static int GAME_PANEL_Y = 150;
     public static int GAME_PANEL_SPEED = 1;
 
     //Store Panel
